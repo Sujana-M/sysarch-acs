@@ -1,5 +1,5 @@
 /** @file
- * Copyright (c) 2016-2021, 2023-2024, Arm Limited or its affiliates. All rights reserved.
+ * Copyright (c) 2016-2021, 2023-2025, Arm Limited or its affiliates. All rights reserved.
  * SPDX-License-Identifier : Apache-2.0
 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -58,4 +58,4 @@ uint32_t m003_entry(uint32_t num_pe);
 uint32_t m004_entry(uint32_t num_pe);
 uint32_t m005_entry(uint32_t num_pe);
 
-#endif // __ACS_PERIPHERAL_H__
+#endif // __ACS_MEMORY_H__

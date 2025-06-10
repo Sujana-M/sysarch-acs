@@ -1,5 +1,5 @@
 /** @file
- * Copyright (c) 2016-2018, 2021-2024, Arm Limited or its affiliates. All rights reserved.
+ * Copyright (c) 2016-2018, 2021-2025, Arm Limited or its affiliates. All rights reserved.
  * SPDX-License-Identifier : Apache-2.0
 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -42,7 +42,6 @@ set_pmu_overflow()
   val_pe_reg_write(PMOVSSET_EL0, 0x1);
 
 }
-
 
 static
 void

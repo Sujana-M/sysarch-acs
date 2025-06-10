@@ -2,10 +2,11 @@
  * Boot entry point and assembler functions for aarch64 tests.
  *
  * Copyright (C) 2017, Red Hat Inc, Andrew Jones <drjones@redhat.com>
- * Copyright (C) 2023, Arm Ltd.
+ * Copyright (C) 2023,2025 Arm Ltd.
  *
  * This work is licensed under the terms of the GNU GPL, version 2.
  */
+
 #define __ASSEMBLY__
 #define BSA_ACS
 #include <auxinfo.h>

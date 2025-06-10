@@ -1,5 +1,5 @@
 /** @file
- * Copyright (c) 2023-2024, Arm Limited or its affiliates. All rights reserved.
+ * Copyright (c) 2023-2025, Arm Limited or its affiliates. All rights reserved.
  * SPDX-License-Identifier : Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,8 +15,8 @@
  * limitations under the License.
 **/
 
-#ifndef __SBSA_AVS_ETE_H
-#define __SBSA_AVS_ETE_H
+#ifndef __ACS_ETE_H
+#define __ACS_ETE_H
 
 #define ACS_TRBLIMITR_EL1_E     (1 << 0)
 #define ACS_TRBLIMITR_EL1_nVM   (1 << 5)
@@ -89,4 +89,4 @@ uint32_t ete006_entry(uint32_t num_pe);
 uint32_t ete007_entry(uint32_t num_pe);
 uint32_t ete008_entry(uint32_t num_pe);
 
-#endif // __SBSA_AVS_ETE_H
+#endif // __ACS_ETE_H

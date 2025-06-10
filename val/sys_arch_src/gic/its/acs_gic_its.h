@@ -1,5 +1,5 @@
 /** @file
- * Copyright (c) 2021,2024, Arm Limited or its affiliates. All rights reserved.
+ * Copyright (c) 2021,2024-2025, Arm Limited or its affiliates. All rights reserved.
  * SPDX-License-Identifier : Apache-2.0
 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +17,6 @@
 
 #ifndef __ACS_GIC_ITS_H
 #define __ACS_GIC_ITS_H
-
 
 #include "../../../include/val_interface.h"
 #include "../../../include/acs_common.h"

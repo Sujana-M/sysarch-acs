@@ -1,5 +1,5 @@
 /** @file
- * Copyright (c) 2024, Arm Limited or its affiliates. All rights reserved.
+ * Copyright (c) 2024-2025, Arm Limited or its affiliates. All rights reserved.
  * SPDX-License-Identifier : Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,8 +15,8 @@
  * limitations under the License.
 **/
 
-#ifndef __SBSA_ACS_RAS_H
-#define __SBSA_ACS_RAS_H
+#ifndef __ACS_RAS_H
+#define __ACS_RAS_H
 
 
 #define ERR_FR_INJ_MASK  (0x3ull << 20)
@@ -133,4 +133,4 @@ void AA64WriteErrPfgf1(uint64_t write_data);
 void AA64WriteErrPfgctl1(uint64_t write_data);
 void AA64WriteErrPfgcdn1(uint64_t write_data);
 
-#endif // __SBSA_ACS_RAS_H
+#endif // __ACS_RAS_H

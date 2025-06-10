@@ -1,5 +1,5 @@
 /** @file
- * Copyright (c) 2016-2018, 2023-2024, Arm Limited or its affiliates. All rights reserved.
+ * Copyright (c) 2016-2018, 2023-2025, Arm Limited or its affiliates. All rights reserved.
  * SPDX-License-Identifier : Apache-2.0
 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,8 +15,8 @@
  * limitations under the License.
 **/
 
-#ifndef __ARM_STD_SMC_H__
-#define __ARM_STD_SMC_H__
+#ifndef __ACS_STD_SMC_H__
+#define __ACS_STD_SMC_H__
 
 /*
  * SMC function IDs for Standard Service queries
@@ -109,6 +109,5 @@ ArmCallSmc (
   ARM_SMC_ARGS * Args,
   int32_t      Conduit
   );
-
 
 #endif

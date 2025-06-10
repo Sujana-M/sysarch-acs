@@ -1,5 +1,5 @@
 /** @file
- * Copyright (c) 2016-2018,2021,2024, Arm Limited or its affiliates. All rights reserved.
+ * Copyright (c) 2016-2018,2021,2024-2025, Arm Limited or its affiliates. All rights reserved.
  * SPDX-License-Identifier : Apache-2.0
 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,8 +15,8 @@
  * limitations under the License.
  **/
 
-#ifndef __BSA_ACS_POWER_H__
-#define __BSA_ACS_POWER_H__
+#ifndef __ACS_WAKEUP_H__
+#define __ACS_WAKEUP_H__
 
 uint32_t u001_entry(uint32_t num_pe);
 uint32_t u002_entry(uint32_t num_pe);

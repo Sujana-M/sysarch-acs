@@ -1,5 +1,5 @@
 /** @file
- * Copyright (c) 2016-2018, 2020, 2024, Arm Limited or its affiliates. All rights reserved.
+ * Copyright (c) 2016-2018, 2020, 2024-2025, Arm Limited or its affiliates. All rights reserved.
  * SPDX-License-Identifier : Apache-2.0
 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -41,6 +41,5 @@ void GicWriteIccPmr(uint64_t write_data);
 void GicClearDaif(void);
 void TestExecuteBarrier(void);
 void GicWriteHcr(uint64_t write_data);
-
 
 #endif // __GIC_SYS_REGS_H__

@@ -1,5 +1,5 @@
 /** @file
- * Copyright (c) 2020-2024, Arm Limited or its affiliates. All rights reserved.
+ * Copyright (c) 2020-2025, Arm Limited or its affiliates. All rights reserved.
  * SPDX-License-Identifier : Apache-2.0
 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +17,6 @@
 
 #include "val/include/acs_val.h"
 #include "val/include/val_interface.h"
-
 #include "val/include/acs_pcie.h"
 #include "val/include/acs_pe.h"
 

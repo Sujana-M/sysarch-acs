@@ -1,5 +1,5 @@
 /** @file
- * Copyright (c) 2023-2024, Arm Limited or its affiliates. All rights reserved.
+ * Copyright (c) 2023-2025, Arm Limited or its affiliates. All rights reserved.
  * SPDX-License-Identifier : Apache-2.0
 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,8 +15,8 @@
  * limitations under the License.
  **/
 
-#ifndef __BSA_AVS_MMU_H__
-#define __BSA_AVS_MMU_H__
+#ifndef __ACS_MMU_H__
+#define __ACS_MMU_H__
 
 extern void val_mair_write(uint64_t value, uint64_t el_num);
 extern void val_tcr_write(uint64_t value, uint64_t el_num);
@@ -28,7 +28,6 @@ extern uint64_t val_read_current_el(void);
 
 extern uint64_t tt_l0_base[];
 
-/* APIs for SBSA */
 /* upper and lower mem attribute shift definitions */
 #define MEM_ATTR_INDX_SHIFT 2
 #define MEM_ATTR_AP_SHIFT   6

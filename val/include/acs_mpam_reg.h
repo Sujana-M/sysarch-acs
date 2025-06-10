@@ -1,5 +1,5 @@
 /** @file
- * Copyright (c) 2024, Arm Limited or its affiliates. All rights reserved.
+ * Copyright (c) 2024-2025, Arm Limited or its affiliates. All rights reserved.
  * SPDX-License-Identifier : Apache-2.0
 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,8 +15,8 @@
  * limitations under the License.
  **/
 
-#ifndef __MPAM_REG_H__
-#define __MPAM_REG_H__
+#ifndef __ACS_MPAM_REG_H__
+#define __ACS_MPAM_REG_H__
 
 /* Macro can be used to declare MASK and SHIFT for bitfields using MSB and LSB */
 #define BITFIELD_DECL(type, name, msb, lsb) \
@@ -273,4 +273,4 @@ BITFIELD_DECL(uint32_t, CSU_FLT_PMG, 23, 16)
 BITFIELD_DECL(uint32_t, MSMON_CSU_VALUE, 30, 0)
 BITFIELD_DECL(uint32_t, MSMON_CSU_NRDY, 31, 31)
 
-#endif /*__MPAM_REG_H__ */
+#endif /*__ACS_MPAM_REG_H__ */

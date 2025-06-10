@@ -1,5 +1,5 @@
 /** @file
- * Copyright (c) 2024, Arm Limited or its affiliates. All rights reserved.
+ * Copyright (c) 2024-2025, Arm Limited or its affiliates. All rights reserved.
  * SPDX-License-Identifier : Apache-2.0
 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,8 +15,8 @@
  * limitations under the License.
  **/
 
-#ifndef __SBSA_ACS_MPAM_H__
-#define __SBSA_ACS_MPAM_H__
+#ifndef __ACS_MPAM_H__
+#define __ACS_MPAM_H__
 
 /* The return value is always 64-bit, type casting is needed by the caller and (m > n) */
 #define CLEAR_BITS_M_TO_N(num, m, n)  (num & ((~0UL << (m+1)) | ((1UL << n) - 1)))
@@ -148,4 +148,4 @@ uint32_t mpam005_entry(uint32_t num_pe);
 uint32_t mpam006_entry(uint32_t num_pe);
 uint32_t mpam007_entry(uint32_t num_pe);
 
-#endif /*__SBSA_ACS_MPAM_H__ */
+#endif /*__ACS_MPAM_H__ */
