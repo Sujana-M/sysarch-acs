@@ -300,7 +300,7 @@ static void
 val_pcie_print_device_info(void)
 {
   uint32_t bdf;
-  uint32_t dp_type;
+  uint32_t dp_type = 0;
   uint32_t tbl_index;
   uint32_t ecam_index;
   uint64_t ecam_base;
