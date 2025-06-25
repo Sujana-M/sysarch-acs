@@ -62,7 +62,7 @@ function build_with_NIST()
     if ! patch -R -p1 -s -f --dry-run < ../../../patches/nist_sbsa_sts.diff; then
         patch -p1 < ../../../patches/nist_sbsa_sts.diff
         status=$?
-	if [ $status -ne 0 ]; then
+        if [ $status -ne 0 ]; then
             echo "patch failed for NIST."
             return $status
         fi
@@ -88,49 +88,50 @@ if [ "$1" == "nist" ]; then
 fi
 
 if [ "$1" == "bsa" ]; then
-    git checkout ShellPkg/ShellPkg.dsc 
+    git checkout ShellPkg/ShellPkg.dsc
     git apply ShellPkg/Application/sysarch-acs/patches/edk2_bsa_acpi.patch
     build -a AARCH64 -t GCC49 -p ShellPkg/ShellPkg.dsc -m ShellPkg/Application/sysarch-acs/apps/uefi/Bsa.inf
     return 0;
 fi
 
 if [ "$1" == "bsa_dt" ]; then
-    git checkout ShellPkg/ShellPkg.dsc 
+    git checkout ShellPkg/ShellPkg.dsc
+    git checkout MdeModulePkg/Library/UefiHiiServicesLib/UefiHiiServicesLib.c
     git apply ShellPkg/Application/sysarch-acs/patches/edk2_bsa_dt.patch
     build -a AARCH64 -t GCC49 -p ShellPkg/ShellPkg.dsc -m ShellPkg/Application/sysarch-acs/apps/uefi/Bsa.inf
     return 0;
 fi
 
 if [ "$1" == "sbsa" ]; then
-    git checkout ShellPkg/ShellPkg.dsc 
+    git checkout ShellPkg/ShellPkg.dsc
     git apply ShellPkg/Application/sysarch-acs/patches/edk2_sbsa.patch
     build -a AARCH64 -t GCC49 -p ShellPkg/ShellPkg.dsc -m ShellPkg/Application/sysarch-acs/apps/uefi/Sbsa.inf
     return 0;
 fi
 
 if [ "$1" == "drtm" ]; then
-    git checkout ShellPkg/ShellPkg.dsc 
+    git checkout ShellPkg/ShellPkg.dsc
     git apply ShellPkg/Application/sysarch-acs/patches/edk2_drtm.patch
     build -a AARCH64 -t GCC49 -p ShellPkg/ShellPkg.dsc -m ShellPkg/Application/sysarch-acs/apps/uefi/Drtm.inf
     return 0;
 fi
 
 if [ "$1" == "mem_test" ]; then
-    git checkout ShellPkg/ShellPkg.dsc 
+    git checkout ShellPkg/ShellPkg.dsc
     git apply ShellPkg/Application/sysarch-acs/mem_test/patches/mem_test_edk2.patch
     build -a AARCH64 -t GCC49 -n 1 -p ShellPkg/ShellPkg.dsc -m ShellPkg/Application/sysarch-acs/apps/uefi/Mem.inf
     return 0;
 fi
 
 if [ "$1" == "mpam" ]; then
-    git checkout ShellPkg/ShellPkg.dsc 
+    git checkout ShellPkg/ShellPkg.dsc
     git apply ShellPkg/Application/sysarch-acs/patches/edk2_mpam.patch
     build -a AARCH64 -t GCC49 -p ShellPkg/ShellPkg.dsc -m ShellPkg/Application/sysarch-acs/apps/uefi/Mpam.inf
     return 0;
 fi
 
 if [ "$1" == "unified" ]; then
-    git checkout ShellPkg/ShellPkg.dsc 
+    git checkout ShellPkg/ShellPkg.dsc
     git apply ShellPkg/Application/sysarch-acs/patches/edk2_unified_acpi.patch
     build -a AARCH64 -t GCC49 -p ShellPkg/ShellPkg.dsc -m ShellPkg/Application/sysarch-acs/apps/uefi/Unified.inf
     return 0;
