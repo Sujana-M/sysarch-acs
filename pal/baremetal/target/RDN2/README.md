@@ -27,8 +27,8 @@ Contact your EDA vendor and ask if they include these tests as part of their ver
   - To get the latest version of the code with bug fixes and new features, use the main branch.
 
 ## Additional reading
-  - For details on the BSA ACS test execution, see the [Arm BSA ACS User Guide](../../../docs/arm_bsa_architecture_compliance_bare-metal_user_guide.pdf).
-  - For details on the Design of the BSA ACS, see the [Arm BSA Validation Methodology Document](../../../docs/arm_bsa_architecture_compliance_validation_methodology.pdf).
+  - For details on the BSA ACS test execution, see the [Arm BSA ACS User Guide](../../../../docs/bsa/arm_bsa_architecture_compliance_bare-metal_user_guide.pdf).
+  - For details on the Design of the BSA ACS, see the [Arm BSA Validation Methodology Document](../../../../docs/bsa/arm_bsa_architecture_compliance_validation_methodology.pdf).
 Note: The Baremetal PCIe enumeration code provided as part of the BSA ACS should be used and should not be replaced. This code is vital in analyzing of the test result.
 
 ## Target platforms
