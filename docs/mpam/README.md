@@ -9,7 +9,7 @@ For more information, download the [MPAM System Component Specification](https:/
 ## Release details
  - Code Quality: Alpha
  - The tests are written for version A.a of the MPAM Memory System Component Specification.
- - For more details on tests implemented in this release, Please refer [MPAM Test Scenario Document](docs/mpam/arm_mpam_architecture_compliance_test_scenario.pdf).
+ - For more details on tests implemented in this release, Please refer [MPAM Test Scenario Document](arm_mpam_architecture_compliance_test_scenario.pdf).
 
 ## Downloading MPAM ACS
 
@@ -22,7 +22,7 @@ MPAM ACS code is present in the sysarch-acs repository.
 ### UEFI application
 #### Prerequisites
 
-ACS build requires that the following requirements are met, Please skip this if you are using [MPAM Application Build Script](../tools/scripts/build_mpam_uefi.sh).
+ACS build requires that the following requirements are met, Please skip this if you are using [MPAM Application Build Script](../../tools/scripts/build_mpam_uefi.sh).
 
 - Any mainstream Linux based OS distribution.
 - git clone EDK2 tree.
@@ -32,12 +32,12 @@ ACS build requires that the following requirements are met, Please skip this if 
 
 #### Build Steps
 
- - cd /path/to/bsa-acs/<br/>
+ - cd /path/to/sysarch-acs/<br/>
  - source mpam/scripts/build_mpam_uefi.sh
 
 #### Build Output
 
-The following output file is created in /path/to/bsa-acs/workspace/output/:
+The following output file is created in /path/to/sysarch-acs/workspace/output/:
 
 - Mpam.efi
 
@@ -66,7 +66,7 @@ On an emulation environment with secondary storage, perform the following steps:
 1. Create an image file which contains the 'Mpam.efi' file. For Example: <br/>
  - mkfs.vfat -C -n HD0 hda.img 31457280 <br/>
  - sudo mount hda.img /mnt/mpam <br/>
- - cd /path/to/bsa-acs/workspace/output/ <br/>
+ - cd /path/to/sysarch-acs/workspace/output/ <br/>
  - sudo cp Mpam.efi /mnt/mpam/ <br/>
  - sudo umount /mnt/mpam
 2. Load the image file to the secondary storage using a backdoor. The steps followed to load the image file are Emulation environment specific and beyond the scope of this document.
