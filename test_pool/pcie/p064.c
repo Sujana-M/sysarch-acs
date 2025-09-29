@@ -23,7 +23,7 @@
 
 #define TEST_NUM   (ACS_PCIE_TEST_NUM_BASE + 64)
 #define TEST_DESC  "Check ARI forwarding support rule     "
-#define TEST_RULE  "PCI_IN_17"
+#define TEST_RULE  "IE_REG_4"
 
 static
 void
