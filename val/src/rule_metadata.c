@@ -465,6 +465,14 @@ rule_test_map_t rule_test_map[RULE_ID_SENTINEL] = {
             .flag             = BASE_RULE,
             .test_num         = ACS_PE_TEST_NUM_BASE  +  48,
         },
+        [S_L6PE_08] = {
+            .test_entry_id    = PE037_ENTRY,
+            .module_id        = PE,
+            .rule_desc        = "Check SPE if implemented",
+            .platform_bitmask = PLATFORM_BAREMETAL | PLATFORM_UEFI,
+            .flag             = BASE_RULE,
+            .test_num         = ACS_PE_TEST_NUM_BASE  +  37,
+        },
         [S_L7PE_02] = {
             .test_entry_id    = PE049_ENTRY,
             .module_id        = PE,
@@ -1317,6 +1325,13 @@ rule_test_map_t rule_test_map[RULE_ID_SENTINEL] = {
             .flag             = BASE_RULE,
             .test_num         = ACS_SMMU_TEST_NUM_BASE + 12,
         },
+        [S_L5SM_04] = {
+            .test_entry_id    = NULL_ENTRY,
+            .module_id        = SMMU,
+            .rule_desc        = "S-EL2 & SMMU Stage1 and Stage2 support",
+            .platform_bitmask = PLATFORM_BAREMETAL | PLATFORM_UEFI,
+            .flag             = ALIAS_RULE,
+        },
         [S_L6SM_02] = {
             .test_entry_id    = I013_ENTRY,
             .module_id        = SMMU,
@@ -1332,6 +1347,13 @@ rule_test_map_t rule_test_map[RULE_ID_SENTINEL] = {
             .platform_bitmask = PLATFORM_BAREMETAL | PLATFORM_UEFI,
             .flag             = BASE_RULE,
             .test_num         = ACS_SMMU_TEST_NUM_BASE + 14,
+        },
+        [S_L6SM_04] = {
+            .test_entry_id    = NULL_ENTRY,
+            .module_id        = SMMU,
+            .rule_desc        = "Check SMMU large VA/TLB/DVM ASID VMID",
+            .platform_bitmask = PLATFORM_BAREMETAL | PLATFORM_UEFI,
+            .flag             = ALIAS_RULE,
         },
         [S_L7SM_01] = {
             .test_entry_id    = I022_ENTRY,
@@ -1382,14 +1404,6 @@ rule_test_map_t rule_test_map[RULE_ID_SENTINEL] = {
             .flag             = BASE_RULE,
             .test_num         = ACS_TIMER_TEST_NUM_BASE + 1,
         },
-        [B_TIME_02] = {
-            .test_entry_id    = T007_ENTRY,
-            .module_id        = TIMER,
-            .rule_desc        = "Check System Counter Frequency",
-            .platform_bitmask = PLATFORM_BAREMETAL | PLATFORM_UEFI,
-            .flag             = BASE_RULE,
-            .test_num         = ACS_TIMER_TEST_NUM_BASE + 7,
-        },
         [B_TIME_06] = {
             .test_entry_id    = T002_ENTRY,
             .module_id        = TIMER,
@@ -1422,10 +1436,10 @@ rule_test_map_t rule_test_map[RULE_ID_SENTINEL] = {
             .flag             = BASE_RULE,
             .test_num         = ACS_TIMER_TEST_NUM_BASE + 5,
         },
-        [S_L8TI_01] = {
+        [S_L5TI_01] = {
             .test_entry_id    = T006_ENTRY,
             .module_id        = TIMER,
-            .rule_desc        = "Check Minimum Counter Frequency 50MHz",
+            .rule_desc        = "Check OS visible counter reports 1GHz",
             .platform_bitmask = PLATFORM_BAREMETAL | PLATFORM_UEFI,
             .flag             = BASE_RULE,
             .test_num         = ACS_TIMER_TEST_NUM_BASE + 6,
@@ -2589,14 +2603,7 @@ rule_test_map_t rule_test_map[RULE_ID_SENTINEL] = {
             .flag             = BASE_RULE,
             .test_num         = ACS_TIMER_TEST_NUM_BASE + 1,
         },
-        [V_L1TM_02] = {
-            .test_entry_id    = T007_ENTRY,
-            .module_id        = TIMER,
-            .rule_desc        = "Check Virt and Phy counter min freq",
-            .platform_bitmask = PLATFORM_UEFI,
-            .flag             = BASE_RULE,
-            .test_num         = ACS_TIMER_TEST_NUM_BASE + 7,
-        },
+
         [V_L1TM_04] = {
             .test_entry_id    = T008_ENTRY,
             .module_id        = TIMER,
@@ -3007,9 +3014,6 @@ rule_test_map_t rule_test_map[RULE_ID_SENTINEL] = {
         [S_L6PE_07] = {
             .module_id        = PE,
         },
-        [S_L6PE_08] = {
-            .module_id        = PE,
-        },
         [S_L8PE_08] = {
             .module_id        = PE,
         },
@@ -3109,14 +3113,11 @@ rule_test_map_t rule_test_map[RULE_ID_SENTINEL] = {
         [S_L3SM_01] = {
             .module_id        = SMMU,
         },
-        [S_L5SM_04] = {
-            .module_id        = SMMU,
-        },
-        [S_L6SM_04] = {
-            .module_id        = SMMU,
-        },
         [P_L1SM_01] = {
             .module_id        = SMMU,
+        },
+        [B_TIME_02] = {
+            .module_id        = TIMER,
         },
         [B_TIME_03] = {
             .module_id        = TIMER,
@@ -3130,7 +3131,10 @@ rule_test_map_t rule_test_map[RULE_ID_SENTINEL] = {
         [B_TIME_10] = {
             .module_id        = TIMER,
         },
-        [S_L5TI_01] = {
+        [S_L8TI_01] = {
+            .module_id        = TIMER,
+        },
+        [V_L1TM_02] = {
             .module_id        = TIMER,
         },
         [B_WD_04] = {
@@ -3553,6 +3557,7 @@ test_entry_fn_t test_entry_func_table[TEST_ENTRY_SENTINEL] = {
     [CXL_11_ENTRY]     = cxl_11_entry,
     [CXL_12_ENTRY]     = cxl_12_entry,
     [CXL_13_ENTRY]     = cxl013_entry,
+    [T006_ENTRY] = t006_entry,
     [G013_ENTRY] = g013_entry,
     [G014_ENTRY] = g014_entry,
     [G015_ENTRY] = g015_entry,
@@ -3796,8 +3801,6 @@ test_entry_fn_t test_entry_func_table[TEST_ENTRY_SENTINEL] = {
     [T003_ENTRY] = t003_entry,
     [T004_ENTRY] = t004_entry,
     [T005_ENTRY] = t005_entry,
-    [T006_ENTRY] = t006_entry,
-    [T007_ENTRY] = t007_entry,
     [T008_ENTRY] = t008_entry,
     [U001_ENTRY] = u001_entry, // used in wrapper.
     [U002_ENTRY] = u002_entry, // used in wrapper.
@@ -3913,7 +3916,6 @@ test_entry_fn_t test_entry_func_table[TEST_ENTRY_SENTINEL] = {
     [T003_ENTRY] = t003_entry,
     [T004_ENTRY] = t004_entry,
     [T005_ENTRY] = t005_entry,
-    [T007_ENTRY] = t007_entry,
     [W001_ENTRY] = w001_entry,
     [W002_ENTRY] = w002_entry,
     [D001_ENTRY] = d001_entry,
@@ -4010,6 +4012,7 @@ test_entry_fn_t test_entry_func_table[TEST_ENTRY_SENTINEL] = {
 #else
 /* Drop compiling entries not required for Bare Metal BSA compliance */
 #ifndef BAREMETAL_BSA_BUILD
+    [T006_ENTRY] = t006_entry,
     [G012_ENTRY] = g012_entry,
     [G013_ENTRY] = g013_entry,
     [G016_ENTRY] = g016_entry,
@@ -4050,7 +4053,6 @@ test_entry_fn_t test_entry_func_table[TEST_ENTRY_SENTINEL] = {
     [PE065_ENTRY] = pe065_entry,
     [M005_ENTRY] = m005_entry,
     [M008_ENTRY] = m008_entry,
-    [T006_ENTRY] = t006_entry,
     [ETE008_ENTRY] = ete008_entry,
     [ETE007_ENTRY] = ete007_entry,
     [ETE002_ENTRY] = ete002_entry,
@@ -4286,7 +4288,6 @@ test_entry_fn_t test_entry_func_table[TEST_ENTRY_SENTINEL] = {
     [T003_ENTRY] = t003_entry,
     [T004_ENTRY] = t004_entry,
     [T001_ENTRY] = t001_entry,
-    [T007_ENTRY] = t007_entry,
     [T002_ENTRY] = t002_entry,
     [E039_ENTRY] = e039_entry, // used in wrapper.
     [E035_ENTRY] = e035_entry,
@@ -4845,6 +4846,13 @@ RULE_ID_e s_l8cxl_rule_list[] = {
     RULE_ID_SENTINEL
 };
 
+/* S_L5SM_04 */
+RULE_ID_e s_l5sm_04_rule_list[]   = {B_SMMU_09, B_SMMU_20, RULE_ID_SENTINEL};
+
+/* S_L6SM_04 */
+RULE_ID_e s_l6sm_04_rule_list[]   = {B_SMMU_03, B_SMMU_04, B_SMMU_05, B_SMMU_13,
+                                     B_SMMU_14, B_SMMU_23, RULE_ID_SENTINEL};
+
 /* PCBSA alias lists */
 /* P_L2WD_01 */
 RULE_ID_e p_l2wd_01_rule_list[]   = {B_WD_01, B_WD_02, B_WD_03, B_WD_04, B_WD_05,
@@ -4939,6 +4947,8 @@ const alias_rule_map_t alias_rule_map[] = {
     {LVQBC,     lvqbc_rule_list},
     {S_L8CXL_1, s_l8cxl_rule_list},
     {XDGKZ,     xdgkz_rule_list},
+    {S_L5SM_04, s_l5sm_04_rule_list},
+    {S_L6SM_04, s_l6sm_04_rule_list},
 
     /* PCBSA alias rules */
     {P_L1_01,   bsa_l1_rule_list},

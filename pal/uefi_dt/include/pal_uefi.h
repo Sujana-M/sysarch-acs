@@ -19,21 +19,12 @@
 #define __PAL_UEFI_H__
 
 #include "pal_status.h"
+#include "pal_print.h"
 
 extern VOID* g_acs_log_file_handle;
-extern UINT32 g_print_level;
-extern UINT32 g_print_mmio;
 extern UINT32 g_curr_module;
 extern UINT32 g_enable_module;
-extern UINT32 g_pcie_p2p;
-extern UINT32 g_pcie_cache_present;
 VOID pal_warn_not_implemented(const CHAR8 *api_name);
-
-#define ACS_PRINT_ERR   5      /* Only Errors. use this to de-clutter the terminal and focus only on specifics */
-#define ACS_PRINT_WARN  4      /* Only warnings & errors. use this to de-clutter the terminal and focus only on specifics */
-#define ACS_PRINT_TEST  3      /* Test description and result descriptions. THIS is DEFAULT */
-#define ACS_PRINT_DEBUG 2      /* For Debug statements. contains register dumps etc */
-#define ACS_PRINT_INFO  1      /* Print all statements. Do not use unless really needed */
 
 #define PCIE_SUCCESS            0x00000000  /* Operation completed successfully */
 #define PCIE_NO_MAPPING         0x10000001  /* A mapping to a Function does not exist */
@@ -81,9 +72,6 @@ typedef struct {
   UINT64   Arg6;
   UINT64   Arg7;
 } ARM_SMC_ARGS;
-
-#define acs_print(verbose, string, ...) if(verbose >= g_print_level) \
-                                            Print(string, ##__VA_ARGS__)
 
 /**
   Conduits for service calls (SMC vs HVC).

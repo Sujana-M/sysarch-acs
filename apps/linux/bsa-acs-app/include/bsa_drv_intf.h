@@ -1,5 +1,5 @@
 /** @file
- * Copyright (c) 2016-2025, Arm Limited or its affiliates. All rights reserved.
+ * Copyright (c) 2016-2026, Arm Limited or its affiliates. All rights reserved.
  * SPDX-License-Identifier : Apache-2.0
 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,7 @@
 
 #ifndef __BSA_DRV_INTF_H__
 #define __BSA_DRV_INTF_H__
+#include <stdbool.h>
 #include <stdint.h>
 
 /* API NUMBERS to COMMUNICATE with DRIVER */
@@ -53,25 +54,26 @@ typedef struct bsa_array_update_u {
 /* Function Prototypes */
 
 int
-call_drv_init_test_env();
+call_drv_init_test_env(unsigned int print_level, bool pcie_skip_dp_nic_ms);
 
 int
-call_drv_clean_test_env();
+call_drv_clean_test_env(void);
 
 int
 call_drv_execute_test(unsigned int test_num, unsigned int num_pe,
-  unsigned int print_level, unsigned long int test_input);
+  unsigned int print_level, unsigned long int test_input,
+  uint32_t level_filter_mode, uint32_t level_value);
 
 int
-call_update_skip_list(unsigned int api_num, int *p_skip_test_num);
+call_update_skip_list(unsigned int api_num, uint32_t *p_skip_test_num);
 
 int
-call_update_sw_view(unsigned int api_num, int *p_sw_view);
+call_update_sw_view(unsigned int api_num, uint32_t *p_sw_view);
 
 int
-call_drv_wait_for_completion();
+call_drv_wait_for_completion(void);
 
-int read_from_proc_bsa_msg();
+int read_from_proc_bsa_msg(void);
 
 /* send a u32 array to the driver via ioctl */
 int bsa_send_array_u32(uint32_t hint, const uint32_t *arr, uint32_t count);

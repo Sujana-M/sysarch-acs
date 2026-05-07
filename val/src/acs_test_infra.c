@@ -179,14 +179,11 @@ val_print_acs_test_status_summary(void)
   @return        None
  **/
 void
-val_print_raw(uint64_t uart_address, uint32_t level, char8_t *string,
-                                                                uint64_t data)
+val_print_raw(uint64_t uart_address, uint32_t level, char8_t *string, uint64_t data)
 {
-
-  if (level >= g_print_level){
+  if (level >= acs_policy_get_print_level()) {
       pal_print_raw(uart_address, string, data);
   }
-
 }
 
 /**
@@ -863,6 +860,12 @@ uint64_t
 val_time_delay_ms(uint64_t timer_ms)
 {
   return pal_time_delay_ms(timer_ms);
+}
+
+uint64_t
+val_get_platform_time_us(void)
+{
+  return pal_get_platform_time_us();
 }
 
 /**

@@ -17,6 +17,7 @@
 
 #include <Library/UefiLib.h>
 #include <Library/UefiBootServicesTableLib.h>
+#include <Library/UefiRuntimeServicesTableLib.h>
 #include <Library/BaseLib.h>
 #include <Library/BaseMemoryLib.h>
 
@@ -30,6 +31,27 @@ static EFI_ACPI_6_1_GENERIC_TIMER_DESCRIPTION_TABLE *gGtdtHdr;
 
 UINT64
 pal_get_gtdt_ptr();
+
+UINT64
+pal_get_platform_time_us (
+  VOID
+  )
+{
+  EFI_STATUS Status;
+  EFI_TIME Time;
+  UINT64 TimeUs;
+
+  Status = gRT->GetTime(&Time, NULL);
+  if (EFI_ERROR(Status)) {
+    pal_print_msg(ACS_PRINT_WARN, " GetTime failed: %x\n", Status);
+    return ~0ULL;
+  }
+
+  TimeUs = (((UINT64)Time.Hour * 60 + Time.Minute) * 60 + Time.Second) * 1000000ULL;
+  TimeUs += (UINT64)Time.Nanosecond / 1000ULL;
+
+  return TimeUs;
+}
 
 /**
   @brief This API overrides the timer specified by TimerTable
@@ -75,7 +97,8 @@ pal_timer_create_info_table(TIMER_INFO_TABLE *TimerTable)
   UINTN                       el2_virt_timer_offset;
 
   if (TimerTable == NULL) {
-    acs_print(ACS_PRINT_ERR, L" Input Timer Table Pointer is NULL. Cannot create Timer INFO\n");
+    pal_print_msg(ACS_PRINT_ERR,
+                  " Input Timer Table Pointer is NULL. Cannot create Timer INFO\n");
     return;
   }
 
@@ -85,15 +108,20 @@ pal_timer_create_info_table(TIMER_INFO_TABLE *TimerTable)
   gGtdtHdr = (EFI_ACPI_6_1_GENERIC_TIMER_DESCRIPTION_TABLE *) pal_get_gtdt_ptr();
 
   if (gGtdtHdr == NULL) {
-    acs_print(ACS_PRINT_ERR, L" GTDT not found\n");
+    pal_print_msg(ACS_PRINT_ERR,
+                  " GTDT not found\n");
     return;
   }
   gtdt_ptr = (UINT8 *)gGtdtHdr;
-  acs_print(ACS_PRINT_INFO, L"  GTDT is at %x and length is %x\n",
-           gGtdtHdr, gGtdtHdr->Header.Length);
+  pal_print_msg(ACS_PRINT_INFO,
+                "  GTDT is at %x and length is %x\n",
+                gGtdtHdr,
+                gGtdtHdr->Header.Length);
 
   revision = gGtdtHdr->Header.Revision;
-  acs_print(ACS_PRINT_INFO, L"  GTDT revision is at %d\n", revision);
+  pal_print_msg(ACS_PRINT_INFO,
+                "  GTDT revision is at %d\n",
+                revision);
 
   //Fill in our internal table
   TimerTable->header.s_el1_timer_flag  = gGtdtHdr->SecurePL1TimerFlags;
@@ -116,15 +144,19 @@ pal_timer_create_info_table(TIMER_INFO_TABLE *TimerTable)
   while(num_of_entries) {
 
     if (Entry->Type == EFI_ACPI_6_1_GTDT_GT_BLOCK) {
-      acs_print(ACS_PRINT_INFO, L"  Found block entry\n");
+      pal_print_msg(ACS_PRINT_INFO,
+                    "  Found block entry\n");
       GtEntry->type = TIMER_TYPE_SYS_TIMER;
       GtEntry->block_cntl_base = Entry->CntCtlBase;
       GtEntry->timer_count     = Entry->GTBlockTimerCount;
-      acs_print(ACS_PRINT_DEBUG, L"  CNTCTLBase = %llx\n", GtEntry->block_cntl_base);
+      pal_print_msg(ACS_PRINT_DEBUG,
+                    "  CNTCTLBase = %llx\n",
+                    GtEntry->block_cntl_base);
       GtBlockTimer = (EFI_ACPI_6_1_GTDT_GT_BLOCK_TIMER_STRUCTURE *)
                         (((UINT8 *)Entry) + Entry->GTBlockTimerOffset);
       for (i = 0; i < GtEntry->timer_count; i++) {
-        acs_print(ACS_PRINT_INFO, L"  Found timer entry\n");
+        pal_print_msg(ACS_PRINT_INFO,
+                      "  Found timer entry\n");
         GtEntry->frame_num[i]    = GtBlockTimer->GTFrameNumber;
         GtEntry->GtCntBase[i]    = GtBlockTimer->CntBaseX;
         GtEntry->GtCntEl0Base[i] = GtBlockTimer->CntEL0BaseX;
@@ -133,8 +165,10 @@ pal_timer_create_info_table(TIMER_INFO_TABLE *TimerTable)
         GtEntry->flags[i]        = GtBlockTimer->GTxPhysicalTimerFlags |
                                    (GtBlockTimer->GTxVirtualTimerFlags << 8) |
                                    (GtBlockTimer->GTxCommonFlags << 16);
-        acs_print(ACS_PRINT_DEBUG, L"  CNTBaseN = %llx for sys counter = %d\n",
-                                                     GtEntry->GtCntBase[i], i);
+        pal_print_msg(ACS_PRINT_DEBUG,
+                      "  CNTBaseN = %llx for sys counter = %d\n",
+                      GtEntry->GtCntBase[i],
+                      i);
         GtBlockTimer++;
         TimerTable->header.num_platform_timer++;
       }
@@ -158,7 +192,8 @@ pal_timer_create_info_table(TIMER_INFO_TABLE *TimerTable)
             sizeof(UINT32));
       }
       if (TimerTable->header.el2_virt_timer_gsiv == 0)
-         acs_print(ACS_PRINT_DEBUG, L"  GTDT don't have el2 virt timer info\n");
+         pal_print_msg(ACS_PRINT_DEBUG,
+                       "  GTDT don't have el2 virt timer info\n");
   }
   else
       pal_timer_platform_override(TimerTable);
@@ -206,8 +241,8 @@ pal_wd_create_info_table(WD_INFO_TABLE *WdTable)
   UINT32                      num_of_entries;
 
   if (WdTable == NULL) {
-    acs_print(ACS_PRINT_ERR,
-              L" Input Watchdog Table Pointer is NULL. Cannot create Watchdog INFO\n");
+    pal_print_msg(ACS_PRINT_ERR,
+                  " Input Watchdog Table Pointer is NULL. Cannot create Watchdog INFO\n");
     return;
   }
 
@@ -216,7 +251,8 @@ pal_wd_create_info_table(WD_INFO_TABLE *WdTable)
   gGtdtHdr = (EFI_ACPI_6_1_GENERIC_TIMER_DESCRIPTION_TABLE *) pal_get_gtdt_ptr();
 
   if (gGtdtHdr == NULL) {
-    acs_print(ACS_PRINT_ERR, L" GTDT not found\n");
+    pal_print_msg(ACS_PRINT_ERR,
+                  " GTDT not found\n");
     return;
   }
 
@@ -239,8 +275,10 @@ pal_wd_create_info_table(WD_INFO_TABLE *WdTable)
       WdEntry->wd_gsiv         = Entry->WatchdogTimerGSIV;
       WdEntry->wd_flags        = Entry->WatchdogTimerFlags;
       WdTable->header.num_wd++;
-      acs_print(ACS_PRINT_DEBUG, L"  Watchdog base = 0x%llx INTID = 0x%x\n",
-                                      WdEntry->wd_ctrl_base, WdEntry->wd_gsiv);
+      pal_print_msg(ACS_PRINT_DEBUG,
+                    "  Watchdog base = 0x%llx INTID = 0x%x\n",
+                    WdEntry->wd_ctrl_base,
+                    WdEntry->wd_gsiv);
       WdEntry++;
     }
     Entry = (EFI_ACPI_6_1_GTDT_SBSA_GENERIC_WATCHDOG_STRUCTURE *)

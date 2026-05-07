@@ -23,7 +23,7 @@
   MODULE_TYPE                    = UEFI_APPLICATION
   VERSION_STRING                 = 1.0
   LIBRARY_CLASS                  = PalLib|UEFI_APPLICATION UEFI_DRIVER
-  DEFINE PAL_UEFI_ACPI_INCLUDE_FLAGS = -I${ACS_PATH}/pal/include -I${ACS_PATH}/pal/uefi_acpi/include -I${ACS_PATH}/pal/baremetal/target/RDN2/include/
+  DEFINE PAL_UEFI_ACPI_INCLUDE_FLAGS = -I${ACS_PATH}/pal/include -I${ACS_PATH}/pal/uefi_acpi/include -I${ACS_PATH}/pal/baremetal/target/RDN2/include/ -I${ACS_PATH}/val/include
 [Sources.common]
   src/AArch64/ArmSmc.S
   src/AArch64/AcsTestInfra.S
@@ -84,4 +84,4 @@
 
 [BuildOptions]
   GCC:*_*_*_ASM_FLAGS  =  -march=armv8.2-a -D__ASSEMBLY__ -D__ASSEMBLER__
-  GCC:*_*_*_CC_FLAGS   =  -O0 -march=armv8.6-a+sve+profile+lse $(PAL_UEFI_ACPI_INCLUDE_FLAGS)
+  GCC:*_*_*_CC_FLAGS   =  -O0 -march=armv8.6-a+sve+profile+lse $(PAL_UEFI_ACPI_INCLUDE_FLAGS) -DTARGET_UEFI

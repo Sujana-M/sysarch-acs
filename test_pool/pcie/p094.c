@@ -19,8 +19,6 @@
 #include "acs_pcie.h"
 #include "acs_memory.h"
 
-extern bool g_pcie_skip_dp_nic_ms;
-
 /* Test runs on Linux and BM Env */
 static const
 test_config_t test_entries[] = {

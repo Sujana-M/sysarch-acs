@@ -25,10 +25,6 @@
 #include <unistd.h>
 #include "sbsa_drv_intf.h"
 
-extern bool g_pcie_skip_dp_nic_ms;
-extern uint32_t g_level_value;
-extern uint32_t g_level_filter_mode;
-
 typedef
 struct __SBSA_DRV_PARMS__
 {
@@ -70,7 +66,7 @@ call_drv_get_status(unsigned long int *arg0, unsigned long int *arg1, unsigned l
 }
 
 int
-call_drv_wait_for_completion()
+call_drv_wait_for_completion(void)
 {
   unsigned long int arg0, arg1, arg2;
 
@@ -86,7 +82,7 @@ call_drv_wait_for_completion()
 
 
 int
-call_drv_init_test_env(unsigned int print_level)
+call_drv_init_test_env(unsigned int print_level, bool pcie_skip_dp_nic_ms)
 {
     FILE             *fd = NULL;
     sbsa_drv_parms_t test_params;
@@ -102,7 +98,7 @@ call_drv_init_test_env(unsigned int print_level)
 
     test_params.api_num  = SBSA_CREATE_INFO_TABLES;
     test_params.arg1     = print_level;
-    test_params.arg2     = g_pcie_skip_dp_nic_ms;
+    test_params.arg2     = pcie_skip_dp_nic_ms;
 
     fwrite(&test_params,1,sizeof(test_params),fd);
 
@@ -114,7 +110,7 @@ call_drv_init_test_env(unsigned int print_level)
 }
 
 int
-call_drv_clean_test_env()
+call_drv_clean_test_env(void)
 {
     FILE             *fd = NULL;
     sbsa_drv_parms_t test_params;
@@ -135,12 +131,13 @@ call_drv_clean_test_env()
 
     fclose(fd);
 
-    call_drv_wait_for_completion();
+    return call_drv_wait_for_completion();
 }
 
 int
 call_drv_execute_test(unsigned int api_num, unsigned int num_pe,
-  unsigned int level, unsigned int print_level, unsigned long int test_input)
+  unsigned int level, unsigned int print_level, unsigned long int test_input,
+  uint32_t level_filter_mode, uint32_t level_value)
 {
     FILE             *fd = NULL;
     sbsa_drv_parms_t test_params;
@@ -162,19 +159,19 @@ call_drv_execute_test(unsigned int api_num, unsigned int num_pe,
 
     if (api_num == RUN_TESTS) {
         /* Pass desired level and filter mode to driver */
-        test_params.level = g_level_value;
-        test_params.arg0  = g_level_filter_mode;
+        test_params.level = level_value;
+        test_params.arg0  = level_filter_mode;
         test_params.arg1 = print_level;
     }
 
     fwrite(&test_params,1,sizeof(test_params),fd);
 
     fclose(fd);
-
+    return 0;
 }
 
 int
-call_update_skip_list(unsigned int api_num, int *p_skip_test_num)
+call_update_skip_list(unsigned int api_num, uint32_t *p_skip_test_num)
 {
     FILE             *fd = NULL;
     sbsa_drv_parms_t test_params;
@@ -197,7 +194,7 @@ call_update_skip_list(unsigned int api_num, int *p_skip_test_num)
     fwrite(&test_params,1,sizeof(test_params),fd);
 
     fclose(fd);
-
+    return 0;
 }
 
 typedef struct __SBSA_MSG__ {
@@ -205,7 +202,8 @@ typedef struct __SBSA_MSG__ {
     unsigned long data;
 }sbsa_msg_parms_t;
 
-int read_from_proc_sbsa_msg() {
+int read_from_proc_sbsa_msg(void)
+{
 
   char buf_msg[sizeof(sbsa_msg_parms_t)];
 
@@ -225,6 +223,7 @@ int read_from_proc_sbsa_msg() {
   }
 
   fclose(fd);
+  return 0;
 }
 
 int sbsa_send_array_u32(uint32_t hint, const uint32_t *arr, uint32_t count)

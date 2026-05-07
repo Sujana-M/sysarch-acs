@@ -21,7 +21,7 @@
 /* This file is common to all the test-cases and VAL of the suite. */
 #include "val_logger.h"
 #include "val_status.h"
-
+#include "acs_execution_policy.h"
 #include "acs_run_request.h"
 
 #define G_SW_OS    0
@@ -165,11 +165,5 @@ val_data_cache_ops_by_va(addr_t addr, uint32_t type);
 
 void
 val_test_entry(void);
-
-void acs_load_run_request_defaults(acs_run_request_t *ctx);
-void acs_apply_el3_params(acs_run_request_t *ctx);
-bool acs_list_contains(const uint32_t *list, uint32_t count, uint32_t value);
-bool acs_is_module_enabled(uint32_t module_base);
-void acs_apply_compile_params(acs_run_request_t *ctx);
 
 #endif

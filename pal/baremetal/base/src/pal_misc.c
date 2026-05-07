@@ -15,13 +15,12 @@
  * limitations under the License.
 **/
 
-#include <stdint.h>
+#include "acs_stdint.h"
 #include <stdarg.h>
 #include "pal_pcie_enum.h"
 #include "pal_common_support.h"
 #include "pal_pl011_uart.h"
 
-extern uint32_t  g_print_level;
 extern void* g_sbsa_log_file_handle;
 uint8_t   *gSharedMemory;
 
@@ -49,8 +48,12 @@ pal_mmio_read8(uint64_t addr)
   uint8_t data;
 
   data = (*(volatile uint8_t *)addr);
-  if (g_print_mmio || (g_curr_module & g_enable_module))
-      print(ACS_PRINT_INFO, " pal_mmio_read8 Address = %llx  Data = %lx\n", addr, data);
+  if (acs_policy_get_print_mmio() || (g_curr_module & g_enable_module))
+      pal_print_msg(ACS_PRINT_INFO,
+                    " %s Address = %llx  Data = %lx\n",
+                    __func__,
+                    addr,
+                    data);
 
   return data;
 }
@@ -69,8 +72,12 @@ pal_mmio_read16(uint64_t addr)
   uint16_t data;
 
   data = (*(volatile uint16_t *)addr);
-  if (g_print_mmio || (g_curr_module & g_enable_module))
-      print(ACS_PRINT_INFO, " pal_mmio_read16 Address = %llx  Data = %lx\n", addr, data);
+  if (acs_policy_get_print_mmio() || (g_curr_module & g_enable_module))
+      pal_print_msg(ACS_PRINT_INFO,
+                    " %s Address = %llx  Data = %lx\n",
+                    __func__,
+                    addr,
+                    data);
 
   return data;
 }
@@ -89,8 +96,12 @@ pal_mmio_read64(uint64_t addr)
   uint64_t data;
 
   data = (*(volatile uint64_t *)addr);
-  if (g_print_mmio || (g_curr_module & g_enable_module))
-      print(ACS_PRINT_INFO, " pal_mmio_read64 Address = %llx  Data = %llx\n", addr, data);
+  if (acs_policy_get_print_mmio() || (g_curr_module & g_enable_module))
+      pal_print_msg(ACS_PRINT_INFO,
+                    " %s Address = %llx  Data = %llx\n",
+                    __func__,
+                    addr,
+                    data);
 
   return data;
 }
@@ -110,8 +121,12 @@ pal_mmio_read(uint64_t addr)
   uint32_t data;
 
   data = (*(volatile uint32_t *)addr);
-  if (g_print_mmio || (g_curr_module & g_enable_module))
-      print(ACS_PRINT_INFO, " pal_mmio_read Address = %8x  Data = %x\n", addr, data);
+  if (acs_policy_get_print_mmio() || (g_curr_module & g_enable_module))
+      pal_print_msg(ACS_PRINT_INFO,
+                    " %s Address = %8x  Data = %x\n",
+                    __func__,
+                    addr,
+                    data);
 
   return data;
 
@@ -129,8 +144,12 @@ pal_mmio_read(uint64_t addr)
 void
 pal_mmio_write8(uint64_t addr, uint8_t data)
 {
-  if (g_print_mmio || (g_curr_module & g_enable_module))
-      print(ACS_PRINT_INFO, " pal_mmio_write8 Address = %llx  Data = %lx\n", addr, data);
+  if (acs_policy_get_print_mmio() || (g_curr_module & g_enable_module))
+      pal_print_msg(ACS_PRINT_INFO,
+                    " %s Address = %llx  Data = %lx\n",
+                    __func__,
+                    addr,
+                    data);
 
   *(volatile uint8_t *)addr = data;
 }
@@ -147,8 +166,12 @@ pal_mmio_write8(uint64_t addr, uint8_t data)
 void
 pal_mmio_write16(uint64_t addr, uint16_t data)
 {
-  if (g_print_mmio || (g_curr_module & g_enable_module))
-      print(ACS_PRINT_INFO, " pal_mmio_write16 Address = %llx  Data = %lx\n", addr, data);
+  if (acs_policy_get_print_mmio() || (g_curr_module & g_enable_module))
+      pal_print_msg(ACS_PRINT_INFO,
+                    " %s Address = %llx  Data = %lx\n",
+                    __func__,
+                    addr,
+                    data);
 
   *(volatile uint16_t *)addr = data;
 }
@@ -165,8 +188,12 @@ pal_mmio_write16(uint64_t addr, uint16_t data)
 void
 pal_mmio_write64(uint64_t addr, uint64_t data)
 {
-  if (g_print_mmio || (g_curr_module & g_enable_module))
-      print(ACS_PRINT_INFO, " pal_mmio_write64 Address = %llx  Data = %llx\n", addr, data);
+  if (acs_policy_get_print_mmio() || (g_curr_module & g_enable_module))
+      pal_print_msg(ACS_PRINT_INFO,
+                    " %s Address = %llx  Data = %llx\n",
+                    __func__,
+                    addr,
+                    data);
 
   *(volatile uint64_t *)addr = data;
 }
@@ -184,8 +211,12 @@ void
 pal_mmio_write(uint64_t addr, uint32_t data)
 {
 
-  if (g_print_mmio || (g_curr_module & g_enable_module))
-      print(ACS_PRINT_INFO, " pal_mmio_write Address = %8x  Data = %x\n", addr, data);
+  if (acs_policy_get_print_mmio() || (g_curr_module & g_enable_module))
+      pal_print_msg(ACS_PRINT_INFO,
+                    " %s Address = %8x  Data = %x\n",
+                    __func__,
+                    addr,
+                    data);
 
     *(volatile uint32_t *)addr = data;
 }
@@ -243,11 +274,13 @@ pal_warn_not_implemented(const char *api_name)
     if (api_name == NULL)
         return;
 
-    print(ACS_PRINT_WARN,
-          "\n       %s is not implemented."
-          "\n       Please implement the PAL function in test suite or"
-          "\n       conduct an offline review for this rule.",
-          api_name);
+    pal_print_msg(ACS_PRINT_WARN,
+                  "\n       %s is not implemented.",
+                  api_name);
+    pal_print_msg(ACS_PRINT_WARN,
+                  "\n       Please implement the PAL function in test suite or");
+    pal_print_msg(ACS_PRINT_WARN,
+                  "\n       conduct an offline review for this rule.");
 }
 
 /**
@@ -645,7 +678,9 @@ void pal_uart_print(int log, const char *fmt, ...)
 void
 pal_dump_dtb()
 {
-  print(ACS_PRINT_ERR, " DTB dump not available for platform initialized with ACPI table\n", 0);
+  pal_print_msg(ACS_PRINT_ERR,
+                " DTB dump not available for platform initialized with ACPI table\n",
+                0);
 }
 
 /**
