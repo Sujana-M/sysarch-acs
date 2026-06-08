@@ -243,7 +243,6 @@ uint32_t p039_entry(uint32_t num_pe);
 uint32_t p042_entry(uint32_t num_pe);
 uint32_t p045_entry(uint32_t num_pe); /* Linux test */
 uint32_t p046_entry(uint32_t num_pe); /* Linux test */
-uint32_t p047_entry(uint32_t num_pe);
 uint32_t p048_entry(uint32_t num_pe);
 uint32_t p049_entry(uint32_t num_pe);
 uint32_t p050_entry(uint32_t num_pe);

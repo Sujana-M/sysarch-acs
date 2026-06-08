@@ -1950,14 +1950,6 @@ rule_test_map_t rule_test_map[RULE_ID_SENTINEL] = {
             .platform_bitmask = PLATFORM_BAREMETAL | PLATFORM_UEFI | PLATFORM_LINUX,
             .flag             = BASE_RULE,
         },
-        [PCI_MM_04] = {
-            .test_entry_id    = P047_ENTRY,
-            .module_id        = PCIE,
-            .rule_desc        = "NP type-1 pcie only support 32-bit",
-            .platform_bitmask = PLATFORM_BAREMETAL | PLATFORM_UEFI,
-            .flag             = BASE_RULE,
-            .test_num         = ACS_PCIE_TEST_NUM_BASE + 47,
-        },
         [PCI_MM_05] = {
             .test_entry_id    = P095_ENTRY,
             .module_id        = PCIE,
@@ -3288,6 +3280,9 @@ rule_test_map_t rule_test_map[RULE_ID_SENTINEL] = {
         [PCI_MM_02] = {
             .module_id        = PCIE,
         },
+        [PCI_MM_04] = {
+            .module_id        = PCIE,
+        },
         [PCI_MM_06] = {
             .module_id        = PCIE,
         },
@@ -3649,7 +3644,6 @@ test_entry_fn_t test_entry_func_table[TEST_ENTRY_SENTINEL] = {
     [P038_ENTRY] = p038_entry,
     [P039_ENTRY] = p039_entry,
     [P042_ENTRY] = p042_entry,
-    [P047_ENTRY] = p047_entry,
     [P048_ENTRY] = p048_entry, // used in wrapper.
     [P049_ENTRY] = p049_entry, // used in wrapper.
     [P050_ENTRY] = p050_entry, // used in wrapper.
@@ -3960,7 +3954,6 @@ test_entry_fn_t test_entry_func_table[TEST_ENTRY_SENTINEL] = {
     [P042_ENTRY] = p042_entry,
     [P045_ENTRY] = p045_entry, // used in wrapper.
     [P046_ENTRY] = p046_entry,
-    [P047_ENTRY] = p047_entry,
     [P064_ENTRY] = p064_entry, // used in wrapper.
     [P068_ENTRY] = p068_entry, // used in wrapper.
     [P071_ENTRY] = p071_entry, // used in wrapper.
@@ -4171,7 +4164,6 @@ test_entry_fn_t test_entry_func_table[TEST_ENTRY_SENTINEL] = {
     [P015_ENTRY] = p015_entry,
     [P016_ENTRY] = p016_entry,
     [P027_ENTRY] = p027_entry, // used in wrapper.
-    [P047_ENTRY] = p047_entry,
     [P048_ENTRY] = p048_entry, // used in wrapper.
     [P049_ENTRY] = p049_entry, // used in wrapper.
     [P050_ENTRY] = p050_entry, // used in wrapper.

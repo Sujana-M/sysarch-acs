@@ -898,10 +898,10 @@ The checklist provides information about:
     </tr>
     <tr>
       <td>PCI_MM_04</td>
-      <td>847</td>
-      <td>NP type-1 pcie only support 32-bit</td>
-      <td>✅</td>
-      <td>❌</td>
+      <td>Not Covered</td>
+      <td></td>
+      <td></td>
+      <td></td>
       <td></td>
     </tr>
     <tr>

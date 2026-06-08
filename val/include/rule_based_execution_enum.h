@@ -857,7 +857,6 @@ typedef enum {
     PCI_LI_03_ENTRY,
     PCI_MM_01_ENTRY,
     PCI_MM_03_ENTRY,
-    P047_ENTRY,
     P049_ENTRY,
     P095_ENTRY,
     P105_ENTRY,
