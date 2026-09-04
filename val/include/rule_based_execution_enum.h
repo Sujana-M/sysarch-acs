@@ -110,6 +110,7 @@ typedef enum {
     YKRHG,
     CNBRV,
     PBCRQ,
+    HBCCD,
 
     /* GIC rules */
     B_GIC_01,

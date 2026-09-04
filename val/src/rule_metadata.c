@@ -2555,6 +2555,14 @@ rule_test_map_t rule_test_map[RULE_ID_SENTINEL] = {
             .flag             = BASE_RULE,
             .test_num         = ACS_PE_TEST_NUM_BASE  + 49,
         },
+        [HBCCD] = {
+            .test_entry_id    = PE040_ENTRY,
+            .module_id        = PE,
+            .rule_desc        = "Check PMU Version v3.5 or higher",
+            .platform_bitmask = PLATFORM_BAREMETAL | PLATFORM_UEFI,
+            .flag             = BASE_RULE,
+            .test_num         = ACS_PE_TEST_NUM_BASE  + 40,
+        },
         [P_L1SM_02] = {
             .test_entry_id    = I008_ENTRY,
             .module_id        = SMMU,
@@ -3974,6 +3982,7 @@ test_entry_fn_t test_entry_func_table[TEST_ENTRY_SENTINEL] = {
     [PE029_ENTRY] = pe029_entry,
     [PE030_ENTRY] = pe030_entry,
     [PE036_ENTRY] = pe036_entry,
+    [PE040_ENTRY] = pe040_entry,
     [PE048_ENTRY] = pe048_entry,
     [PE049_ENTRY] = pe049_entry,
     [PE063_ENTRY] = pe063_entry,

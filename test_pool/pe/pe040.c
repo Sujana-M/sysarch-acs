@@ -21,7 +21,11 @@
 
 
 #define TEST_NUM   (ACS_PE_TEST_NUM_BASE  +  40)
+#ifdef PC_BSA
+#define TEST_RULE  "HBCCD"
+#else
 #define TEST_RULE  "S_L6PE_04"
+#endif
 #define TEST_DESC  "Check PMU Version v3.5 or higher      "
 
 #define TEST_NUM1   (ACS_PE_TEST_NUM_BASE  +  64)
