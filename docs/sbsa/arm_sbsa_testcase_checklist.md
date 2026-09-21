@@ -945,11 +945,11 @@ The checklist provides information about:
     </tr>
     <tr>
       <td>PCI_IN_07</td>
-      <td>Not Covered</td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
+      <td>828</td>
+      <td>Check all 1's for out of range</td>
+      <td>Yes</td>
+      <td>Yes</td>
+      <td>No</td>
       <td></td>
       <td></td>
     </tr>
@@ -1704,11 +1704,11 @@ The checklist provides information about:
     </tr>
     <tr>
       <td>PCI_IN_07</td>
-      <td>Not Covered</td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
+      <td>828</td>
+      <td>Check all 1's for out of range</td>
+      <td>Yes</td>
+      <td>Yes</td>
+      <td>No</td>
       <td></td>
       <td></td>
     </tr>

@@ -722,10 +722,10 @@ The checklist provides information about:
     </tr>
     <tr>
       <td>PCI_IN_07</td>
-      <td>Not covered</td>
-      <td></td>
-      <td></td>
-      <td></td>
+      <td>828</td>
+      <td>Check all 1's for out of range</td>
+      <td>✅</td>
+      <td>❌</td>
       <td></td>
     </tr>
     <tr>

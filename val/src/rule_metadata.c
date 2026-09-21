@@ -1874,6 +1874,14 @@ rule_test_map_t rule_test_map[RULE_ID_SENTINEL] = {
             .flag             = BASE_RULE,
             .test_num         = ACS_PCIE_TEST_NUM_BASE + 101,
         },
+        [PCI_IN_07] = {
+            .test_entry_id    = P028_ENTRY,
+            .module_id        = PCIE,
+            .rule_desc        = "Check all 1's for out of range",
+            .platform_bitmask = PLATFORM_BAREMETAL | PLATFORM_UEFI,
+            .flag             = BASE_RULE,
+            .test_num         = ACS_PCIE_TEST_NUM_BASE + 28,
+        },
         [PCI_IN_11] = {
             .test_entry_id    = E010_ENTRY,
             .module_id        = PCIE,
@@ -3283,9 +3291,6 @@ rule_test_map_t rule_test_map[RULE_ID_SENTINEL] = {
         [PCI_IC_18] = {
             .module_id        = PCIE,
         },
-        [PCI_IN_07] = {
-            .module_id        = PCIE,
-        },
         [PCI_IN_08] = {
             .module_id        = PCIE,
         },
@@ -3649,6 +3654,7 @@ test_entry_fn_t test_entry_func_table[TEST_ENTRY_SENTINEL] = {
     [P006_ENTRY] = p006_entry, // used in wrapper.
     [P007_ENTRY] = p007_entry,
     [P008_ENTRY] = p008_entry,
+    [P028_ENTRY] = p028_entry,
     [P009_ENTRY] = p009_entry,
     [P010_ENTRY] = p010_entry,
     [P011_ENTRY] = p011_entry,
@@ -3996,6 +4002,7 @@ test_entry_fn_t test_entry_func_table[TEST_ENTRY_SENTINEL] = {
     [P005_ENTRY] = p005_entry, // used in wrapper.
     [P006_ENTRY] = p006_entry, // used in wrapper.
     [P008_ENTRY] = p008_entry,
+    [P028_ENTRY] = p028_entry,
     [P009_ENTRY] = p009_entry,
     [P011_ENTRY] = p011_entry,
     [P017_ENTRY] = p017_entry,
@@ -4418,6 +4425,7 @@ test_entry_fn_t test_entry_func_table[TEST_ENTRY_SENTINEL] = {
     [P035_ENTRY] = p035_entry,
     [P024_ENTRY] = p024_entry, // used in wrapper.
     [P008_ENTRY] = p008_entry,
+    [P028_ENTRY] = p028_entry,
     [P006_ENTRY] = p006_entry, // used in wrapper.
     [P001_ENTRY] = p001_entry,
     [P003_ENTRY] = p003_entry, // used in wrapper.

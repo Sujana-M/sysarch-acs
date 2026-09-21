@@ -24,6 +24,10 @@
 #define TEST_RULE  "PCI_IN_16"
 #define TEST_DESC  "Check all 1's for out of range        "
 
+#define TEST_NUM1  (ACS_PCIE_TEST_NUM_BASE + 28)
+#define TEST_RULE1 "PCI_IN_07"
+#define TEST_DESC1 "Check all 1's for out of range        "
+
 static void *branch_to_test;
 
 static
@@ -141,6 +145,27 @@ p008_entry(uint32_t num_pe)
   status = val_check_for_error(TEST_NUM, num_pe, TEST_RULE);
 
   val_report_status(0, ACS_END(TEST_NUM), NULL);
+
+  return status;
+}
+
+uint32_t
+p028_entry(uint32_t num_pe)
+{
+
+  uint32_t status = ACS_STATUS_FAIL;
+
+  num_pe = 1;  //This test is run on single processor
+
+  val_log_context((char8_t *)__FILE__, (char8_t *)__func__, __LINE__);
+  status = val_initialize_test(TEST_NUM1, TEST_DESC1, num_pe);
+  if (status != ACS_STATUS_SKIP)
+      val_run_test_payload(TEST_NUM1, num_pe, payload, 0);
+
+  /* get the result from single PE and check for failure */
+  status = val_check_for_error(TEST_NUM1, num_pe, TEST_RULE1);
+
+  val_report_status(0, ACS_END(TEST_NUM1), NULL);
 
   return status;
 }
