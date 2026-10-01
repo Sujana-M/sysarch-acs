@@ -165,6 +165,32 @@ typedef struct {
   pcie_device_attr device[];         ///< in the format of Segment/Bus/Dev/Func
 } pcie_device_bdf_table;
 
+typedef struct {
+  uint32_t offset;       ///< Config-space offset relative to header/capability base
+  uint32_t restore_mask; ///< Bits to restore from saved value; other bits are preserved
+} pcie_cfg_restore_entry_t;
+
+typedef struct {
+  uint32_t has_cap;
+  uint32_t cap_base;
+  uint32_t num_entries;
+  uint32_t data[PCIE_SAVED_CAP_REGS];
+} pcie_saved_cap_state_t;
+
+typedef struct {
+  uint32_t header[PCIE_STD_CFG_DWORDS];
+  pcie_saved_cap_state_t pcie_cap;
+  pcie_saved_cap_state_t aer_cap;
+  pcie_saved_cap_state_t dpc_cap;
+  pcie_saved_cap_state_t acs_cap;
+  pcie_saved_cap_state_t ats_cap;
+  pcie_saved_cap_state_t pasid_cap;
+  pcie_saved_cap_state_t sriov_cap;
+  pcie_saved_cap_state_t ltr_cap;
+  pcie_saved_cap_state_t ptm_cap;
+  pcie_saved_cap_state_t tph_cap;
+} pcie_saved_state_t;
+
 void     val_pcie_write_cfg(uint32_t bdf, uint32_t offset, uint32_t data);
 void     val_pcie_io_write_cfg(uint32_t bdf, uint32_t offset, uint32_t data);
 uint32_t val_pcie_read_cfg(uint32_t bdf, uint32_t offset, uint32_t *data);
@@ -208,6 +234,8 @@ uint32_t val_pcie_get_atomicop_requester_capable(uint32_t bdf);
 uint32_t val_pcie_get_cap_ptr(uint32_t bdf);
 uint32_t val_pcie_get_bist(uint32_t bdf);
 uint32_t val_pcie_ari_forwarding_support(uint32_t bdf);
+void     val_pcie_save_config_state(uint32_t bdf, pcie_saved_state_t *state);
+void     val_pcie_restore_config_state(uint32_t bdf, pcie_saved_state_t *state);
 
 uint32_t p001_entry(uint32_t num_pe);
 uint32_t p002_entry(uint32_t num_pe);
