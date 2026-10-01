@@ -26,8 +26,6 @@
 #include "rule_based_execution.h"
 #endif
 
-#define WARN_STR_LEN 7
-
 pcie_bdf_list_t *pcie_pheripherals_bdf_list = NULL;
 PCIE_INFO_TABLE *g_pcie_info_table;
 pcie_device_bdf_table *g_pcie_bdf_table;
@@ -35,6 +33,82 @@ pcie_device_bdf_table *g_pcie_bdf_table;
 uint32_t pcie_bdf_table_list_flag;
 uint32_t g_pcie_integrated_devices;
 uint64_t pal_get_mcfg_ptr(void);
+
+/* Type 0 header registers restored after FLR: BARs, ROM BAR, and interrupt line. */
+static const pcie_cfg_restore_entry_t pcie_type0_header_restore_table[] = {
+  {BAR0_OFFSET, PCIE_RESTORE_FULL_MASK},
+  {BAR1_OFFSET, PCIE_RESTORE_FULL_MASK},
+  {BAR2_OFFSET, PCIE_RESTORE_FULL_MASK},
+  {BAR3_OFFSET, PCIE_RESTORE_FULL_MASK},
+  {BAR4_OFFSET, PCIE_RESTORE_FULL_MASK},
+  {BAR5_OFFSET, PCIE_RESTORE_FULL_MASK},
+  {PCIE_TYPE0_ROM_BAR_OFFSET, PCIE_TYPE0_ROM_BAR_RESTORE_MASK},
+  {TYPE01_ILR, PCIE_INTERRUPT_LINE_RESTORE_MASK},
+};
+
+static const pcie_cfg_restore_entry_t pcie_type1_header_restore_table[] = {
+  {BAR0_OFFSET, PCIE_RESTORE_FULL_MASK},
+  {BAR1_OFFSET, PCIE_RESTORE_FULL_MASK},
+  {TYPE01_ILR, PCIE_INTERRUPT_LINE_RESTORE_MASK},
+};
+
+static const pcie_cfg_restore_entry_t pcie_command_restore_table[] = {
+  {TYPE01_CR, PCIE_CFG_COMMAND_RESTORE_MASK},
+};
+
+static const pcie_cfg_restore_entry_t pcie_cap_restore_table[] = {
+  {DCTLR_OFFSET, PCIE_DCTL_RESTORE_MASK},
+  {LCTRLR_OFFSET, PCIE_CFG_LOWER_WORD_RESTORE_MASK},
+  {DCTL2R_OFFSET, PCIE_DCTL2_RESTORE_MASK},
+  {LCTL2R_OFFSET, PCIE_CFG_LOWER_WORD_RESTORE_MASK},
+};
+
+static const pcie_cfg_restore_entry_t pcie_aer_restore_table[] = {
+  {AER_UNCORR_MASK_OFFSET, PCIE_RESTORE_FULL_MASK},
+  {AER_UNCORR_SEVR_OFFSET, PCIE_RESTORE_FULL_MASK},
+  {AER_CORR_MASK_OFFSET, PCIE_RESTORE_FULL_MASK},
+  {AER_ROOT_ERR_CMD_OFFSET, PCIE_RESTORE_FULL_MASK},
+};
+
+static const pcie_cfg_restore_entry_t pcie_dpc_restore_table[] = {
+  {DPC_CTRL_OFFSET, PCIE_CFG_UPPER_WORD_RESTORE_MASK},
+};
+
+static const pcie_cfg_restore_entry_t pcie_acs_restore_table[] = {
+  {ACSCR_OFFSET, PCIE_CFG_UPPER_WORD_RESTORE_MASK},
+};
+
+static const pcie_cfg_restore_entry_t pcie_ats_restore_table[] = {
+  {ATS_CTRL, PCIE_CFG_UPPER_WORD_RESTORE_MASK},
+};
+
+static const pcie_cfg_restore_entry_t pcie_pasid_restore_table[] = {
+  {PASID_CAPABILITY_OFFSET, PCIE_CFG_UPPER_WORD_RESTORE_MASK},
+};
+
+static const pcie_cfg_restore_entry_t pcie_sriov_restore_table[] = {
+  {PCIE_SRIOV_CTRL_OFFSET, PCIE_CFG_LOWER_WORD_RESTORE_MASK},
+  {PCIE_SRIOV_NUM_VF_OFFSET, PCIE_CFG_LOWER_WORD_RESTORE_MASK},
+  {PCIE_SRIOV_SYSTEM_PAGE_SIZE_OFFSET, PCIE_RESTORE_FULL_MASK},
+  {PCIE_SRIOV_VF_BAR0_OFFSET, PCIE_RESTORE_FULL_MASK},
+  {PCIE_SRIOV_VF_BAR1_OFFSET, PCIE_RESTORE_FULL_MASK},
+  {PCIE_SRIOV_VF_BAR2_OFFSET, PCIE_RESTORE_FULL_MASK},
+  {PCIE_SRIOV_VF_BAR3_OFFSET, PCIE_RESTORE_FULL_MASK},
+  {PCIE_SRIOV_VF_BAR4_OFFSET, PCIE_RESTORE_FULL_MASK},
+  {PCIE_SRIOV_VF_BAR5_OFFSET, PCIE_RESTORE_FULL_MASK},
+};
+
+static const pcie_cfg_restore_entry_t pcie_ltr_restore_table[] = {
+  {PCIE_LTR_MAX_LATENCY_OFFSET, PCIE_RESTORE_FULL_MASK},
+};
+
+static const pcie_cfg_restore_entry_t pcie_ptm_restore_table[] = {
+  {PCIE_PTM_CTRL_OFFSET, PCIE_RESTORE_FULL_MASK},
+};
+
+static const pcie_cfg_restore_entry_t pcie_tph_restore_table[] = {
+  {PCIE_TPH_REQ_CTRL_OFFSET, PCIE_RESTORE_FULL_MASK},
+};
 
 /**
   @brief   This API reads 32-bit data from PCIe config space pointed by Bus,
@@ -1032,6 +1106,177 @@ val_pcie_find_capability(uint32_t bdf, uint32_t cid_type, uint32_t cid, uint32_t
   /* The capability was not found */
   return PCIE_CAP_NOT_FOUND;
 }
+
+static uint32_t
+val_pcie_saved_header_read32(pcie_saved_state_t *state, uint32_t offset)
+{
+  return state->header[offset / sizeof(uint32_t)];
+}
+
+static void
+val_pcie_restore_cfg_masked(uint32_t bdf, uint32_t offset,
+                            uint32_t saved_value, uint32_t restore_mask)
+{
+  uint32_t current_value;
+  uint32_t restore_value;
+
+  val_pcie_read_cfg(bdf, offset, &current_value);
+  restore_value = (current_value & ~restore_mask) | (saved_value & restore_mask);
+  val_pcie_write_cfg(bdf, offset, restore_value);
+}
+
+static void
+val_pcie_restore_header_table(uint32_t bdf, pcie_saved_state_t *state,
+                              const pcie_cfg_restore_entry_t *restore_table,
+                              uint32_t num_entries)
+{
+  uint32_t idx;
+  uint32_t offset;
+
+  for (idx = 0; idx < num_entries; idx++) {
+      offset = restore_table[idx].offset;
+      val_pcie_restore_cfg_masked(bdf, offset,
+                                  val_pcie_saved_header_read32(state, offset),
+                                  restore_table[idx].restore_mask);
+  }
+}
+
+static void
+val_pcie_save_cap_table(uint32_t bdf, uint32_t cid_type, uint32_t cid,
+                        pcie_saved_cap_state_t *cap_state,
+                        const pcie_cfg_restore_entry_t *restore_table,
+                        uint32_t num_entries)
+{
+  uint32_t idx;
+  uint32_t cap_base;
+
+  cap_state->has_cap = 0;
+  cap_state->cap_base = 0;
+  cap_state->num_entries = 0;
+
+  if (num_entries > PCIE_SAVED_CAP_REGS) {
+      val_print(DEBUG, "\nPCIE_RESTORE: BDF 0x%x CID type 0x%x CID 0x%x "
+                "restore entries %d exceed save buffer %d; truncating",
+                bdf, cid_type, cid, num_entries, PCIE_SAVED_CAP_REGS);
+      num_entries = PCIE_SAVED_CAP_REGS;
+  }
+
+  if (val_pcie_find_capability(bdf, cid_type, cid, &cap_base) != PCIE_SUCCESS)
+      return;
+
+  cap_state->has_cap = 1;
+  cap_state->cap_base = cap_base;
+  cap_state->num_entries = num_entries;
+
+  for (idx = 0; idx < num_entries; idx++)
+      val_pcie_read_cfg(bdf, cap_base + restore_table[idx].offset, &cap_state->data[idx]);
+}
+
+static void
+val_pcie_restore_cap_table(uint32_t bdf, pcie_saved_cap_state_t *cap_state,
+                           const pcie_cfg_restore_entry_t *restore_table)
+{
+  uint32_t idx;
+  uint32_t offset;
+
+  if (!cap_state->has_cap)
+      return;
+
+  for (idx = 0; idx < cap_state->num_entries; idx++) {
+      offset = restore_table[idx].offset;
+      val_pcie_restore_cfg_masked(bdf, cap_state->cap_base + offset,
+                                  cap_state->data[idx], restore_table[idx].restore_mask);
+  }
+}
+
+/**
+  @brief  Save Function PCIe configuration state that ACS may restore after FLR.
+          The save set is limited to known standard and capability registers.
+
+  @param  bdf   - Segment/Bus/Dev/Func in the format of PCIE_CREATE_BDF
+  @param  state - Saved state buffer
+  @return None
+**/
+void
+val_pcie_save_config_state(uint32_t bdf, pcie_saved_state_t *state)
+{
+  uint32_t idx;
+
+  for (idx = 0; idx < PCIE_STD_CFG_DWORDS; idx++)
+      val_pcie_read_cfg(bdf, idx * sizeof(uint32_t), &state->header[idx]);
+
+  val_pcie_save_cap_table(bdf, PCIE_CAP, CID_PCIECS, &state->pcie_cap,
+                          pcie_cap_restore_table,
+                          PCIE_ARRAY_ENTRIES(pcie_cap_restore_table));
+  val_pcie_save_cap_table(bdf, PCIE_ECAP, ECID_AER, &state->aer_cap,
+                          pcie_aer_restore_table,
+                          PCIE_ARRAY_ENTRIES(pcie_aer_restore_table));
+  val_pcie_save_cap_table(bdf, PCIE_ECAP, ECID_DPC, &state->dpc_cap,
+                          pcie_dpc_restore_table,
+                          PCIE_ARRAY_ENTRIES(pcie_dpc_restore_table));
+  val_pcie_save_cap_table(bdf, PCIE_ECAP, ECID_ACS, &state->acs_cap,
+                          pcie_acs_restore_table,
+                          PCIE_ARRAY_ENTRIES(pcie_acs_restore_table));
+  val_pcie_save_cap_table(bdf, PCIE_ECAP, ECID_ATS, &state->ats_cap,
+                          pcie_ats_restore_table,
+                          PCIE_ARRAY_ENTRIES(pcie_ats_restore_table));
+  val_pcie_save_cap_table(bdf, PCIE_ECAP, ECID_PASID, &state->pasid_cap,
+                          pcie_pasid_restore_table,
+                          PCIE_ARRAY_ENTRIES(pcie_pasid_restore_table));
+  val_pcie_save_cap_table(bdf, PCIE_ECAP, ECID_SRIOV, &state->sriov_cap,
+                          pcie_sriov_restore_table,
+                          PCIE_ARRAY_ENTRIES(pcie_sriov_restore_table));
+  val_pcie_save_cap_table(bdf, PCIE_ECAP, PCIE_EXT_CAP_ID_LTR, &state->ltr_cap,
+                          pcie_ltr_restore_table,
+                          PCIE_ARRAY_ENTRIES(pcie_ltr_restore_table));
+  val_pcie_save_cap_table(bdf, PCIE_ECAP, PCIE_EXT_CAP_ID_PTM, &state->ptm_cap,
+                          pcie_ptm_restore_table,
+                          PCIE_ARRAY_ENTRIES(pcie_ptm_restore_table));
+  val_pcie_save_cap_table(bdf, PCIE_ECAP, PCIE_EXT_CAP_ID_TPH, &state->tph_cap,
+                          pcie_tph_restore_table,
+                          PCIE_ARRAY_ENTRIES(pcie_tph_restore_table));
+}
+
+/**
+  @brief  Restore Function PCIe configuration state using explicit access
+          semantics for known standard and capability registers. Unknown and
+          status registers are left untouched.
+
+  @param  bdf   - Segment/Bus/Dev/Func in the format of PCIE_CREATE_BDF
+  @param  state - Saved state buffer
+  @return None
+**/
+void
+val_pcie_restore_config_state(uint32_t bdf, pcie_saved_state_t *state)
+{
+  uint32_t header_type;
+  uint32_t saved_value;
+
+  saved_value = val_pcie_saved_header_read32(state, TYPE01_CLSR);
+  header_type = (saved_value >> TYPE01_HTR_SHIFT) & HTR_HL_MASK;
+
+  if (header_type == TYPE1_HEADER)
+      val_pcie_restore_header_table(bdf, state, pcie_type1_header_restore_table,
+                                    PCIE_ARRAY_ENTRIES(pcie_type1_header_restore_table));
+  else
+      val_pcie_restore_header_table(bdf, state, pcie_type0_header_restore_table,
+                                    PCIE_ARRAY_ENTRIES(pcie_type0_header_restore_table));
+
+  val_pcie_restore_cap_table(bdf, &state->ltr_cap, pcie_ltr_restore_table);
+  val_pcie_restore_cap_table(bdf, &state->ptm_cap, pcie_ptm_restore_table);
+  val_pcie_restore_cap_table(bdf, &state->tph_cap, pcie_tph_restore_table);
+  val_pcie_restore_cap_table(bdf, &state->aer_cap, pcie_aer_restore_table);
+  val_pcie_restore_cap_table(bdf, &state->dpc_cap, pcie_dpc_restore_table);
+  val_pcie_restore_cap_table(bdf, &state->acs_cap, pcie_acs_restore_table);
+  val_pcie_restore_cap_table(bdf, &state->ats_cap, pcie_ats_restore_table);
+  val_pcie_restore_cap_table(bdf, &state->pasid_cap, pcie_pasid_restore_table);
+  val_pcie_restore_cap_table(bdf, &state->sriov_cap, pcie_sriov_restore_table);
+  val_pcie_restore_cap_table(bdf, &state->pcie_cap, pcie_cap_restore_table);
+
+  val_pcie_restore_header_table(bdf, state, pcie_command_restore_table,
+                                PCIE_ARRAY_ENTRIES(pcie_command_restore_table));
+}
+
 
 /**
   @brief  Disables bus master by clearing Bus Master Enable bit in the command register.

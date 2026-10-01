@@ -18,7 +18,6 @@
 #include "acs_val.h"
 #include "acs_pcie.h"
 #include "acs_pe.h"
-#include "acs_memory.h"
 
 #define TEST_NUM   (ACS_PCIE_TEST_NUM_BASE + 35)
 #define TEST_RULE  "PCI_SM_02"
@@ -68,12 +67,10 @@ payload(void)
   uint32_t test_skip = 1;
   bool skip_due_to_flag = false;
   bool skip_flag = acs_policy_get_pcie_skip_dp_nic_ms();
-  uint32_t idx;
   uint32_t timeout;
   uint32_t status;
   uint32_t device_id, vendor_id;
-  addr_t config_space_addr;
-  void *func_config_space;
+  pcie_saved_state_t func_config_state;
   pcie_device_bdf_table *bdf_tbl_ptr;
 
   pe_index = val_pe_get_index_mpid(val_pe_get_mpid());
@@ -122,26 +119,8 @@ payload(void)
           if (!flr_cap)
               continue;
 
-          /* Allocate 4KB of space for saving function configuration space */
-          func_config_space = NULL;
-          func_config_space = val_aligned_alloc(MEM_ALIGN_4K, PCIE_CFG_SIZE);
-
-          /* If memory allocation fail, fail the test */
-          if (func_config_space == NULL)
-          {
-              val_print(ERROR, "\n       Memory allocation fail");
-              val_set_status(pe_index, RESULT_FAIL(test_fails));
-              return;
-          }
-
-          /* Get function configuration space address */
-          config_space_addr = val_pcie_get_bdf_config_addr(bdf);
-          val_print(TRACE, "  config space addr 0x%x", config_space_addr);
-
-          /* Save the function config space to restore after FLR */
-          for (idx = 0; idx < PCIE_CFG_SIZE / 4; idx++) {
-              *((uint32_t *)func_config_space + idx) = *((uint32_t *)config_space_addr + idx);
-          }
+          /* Save selected function configuration state to restore after FLR */
+          val_pcie_save_config_state(bdf, &func_config_state);
 
           /* Initiate FLR by setting the FLR bit */
           val_pcie_read_cfg(bdf, cap_base + DCTLR_OFFSET, &reg_value);
@@ -153,7 +132,7 @@ payload(void)
           if (status)
           {
               val_print(ERROR, "\n       Failed to time delay for BDF 0x%x ", bdf);
-              val_memory_free_aligned(func_config_space);
+              val_pcie_restore_config_state(bdf, &func_config_state);
               val_set_status(pe_index, RESULT_FAIL(01));
               return;
           }
@@ -192,19 +171,16 @@ payload(void)
           {
               val_print(ERROR, "\n       BDF 0x%x not present", bdf);
               test_fails++;
-              val_memory_free_aligned(func_config_space);
+              val_pcie_restore_config_state(bdf, &func_config_state);
               continue;
           }
 
           if (is_flr_failed(bdf))
               test_fails++;
 
-          /* Initialize the function config space */
-          for (idx = 0; idx < PCIE_CFG_SIZE / 4; idx++) {
-              *((uint32_t *)config_space_addr + idx) = *((uint32_t *)func_config_space + idx);
-          }
+          /* Restore selected function configuration state */
+          val_pcie_restore_config_state(bdf, &func_config_state);
 
-          val_memory_free_aligned(func_config_space);
       }
   }
 

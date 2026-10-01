@@ -133,6 +133,11 @@
 #define BAR_32B_OFFSET            4
 #define BAR_64B_OFFSET            8
 #define BAR0_OFFSET               0x10
+#define BAR1_OFFSET               (BAR0_OFFSET + BAR_32B_OFFSET)
+#define BAR2_OFFSET               (BAR1_OFFSET + BAR_32B_OFFSET)
+#define BAR3_OFFSET               (BAR2_OFFSET + BAR_32B_OFFSET)
+#define BAR4_OFFSET               (BAR3_OFFSET + BAR_32B_OFFSET)
+#define BAR5_OFFSET               (BAR4_OFFSET + BAR_32B_OFFSET)
 #define BAR_TYPE_0_MAX_OFFSET     0x24
 #define BAR_TYPE_1_MAX_OFFSET     0x14
 #define BAR_NP_TYPE               0x0
@@ -195,6 +200,36 @@
 #define PCIE_CAP_END     0xFC
 #define PCIE_ECAP_START  0x100
 #define PCIE_ECAP_END    0xFFC
+
+#define WARN_STR_LEN 7
+#define PCIE_STD_CFG_DWORDS 16
+#define PCIE_SAVED_CAP_REGS 16
+#define PCIE_CFG_COMMAND_RESTORE_MASK       0x0000077FU
+#define PCIE_RESTORE_FULL_MASK              0xFFFFFFFFU
+#define PCIE_INTERRUPT_LINE_RESTORE_MASK    0x000000FFU
+#define PCIE_DCTL_RESTORE_MASK              0x00007FFFU
+#define PCIE_DCTL2_RESTORE_MASK             0x0000FFFFU
+#define PCIE_TYPE0_ROM_BAR_OFFSET           0x30
+#define PCIE_TYPE0_ROM_BAR_RESTORE_MASK     0xFFFFF801U
+#define PCIE_ARRAY_ENTRIES(table) \
+        (sizeof(table) / sizeof((table)[0]))
+#define PCIE_CFG_UPPER_WORD_RESTORE_MASK    0xFFFF0000U
+#define PCIE_CFG_LOWER_WORD_RESTORE_MASK    0x0000FFFFU
+#define PCIE_EXT_CAP_ID_TPH                 0x0017U
+#define PCIE_EXT_CAP_ID_LTR                 0x0018U
+#define PCIE_EXT_CAP_ID_PTM                 0x001FU
+#define PCIE_LTR_MAX_LATENCY_OFFSET         0x04U
+#define PCIE_PTM_CTRL_OFFSET                0x08U
+#define PCIE_TPH_REQ_CTRL_OFFSET            0x08U
+#define PCIE_SRIOV_CTRL_OFFSET              0x08U
+#define PCIE_SRIOV_NUM_VF_OFFSET            0x10U
+#define PCIE_SRIOV_SYSTEM_PAGE_SIZE_OFFSET  0x20U
+#define PCIE_SRIOV_VF_BAR0_OFFSET           0x24U
+#define PCIE_SRIOV_VF_BAR1_OFFSET           (PCIE_SRIOV_VF_BAR0_OFFSET + BAR_32B_OFFSET)
+#define PCIE_SRIOV_VF_BAR2_OFFSET           (PCIE_SRIOV_VF_BAR1_OFFSET + BAR_32B_OFFSET)
+#define PCIE_SRIOV_VF_BAR3_OFFSET           (PCIE_SRIOV_VF_BAR2_OFFSET + BAR_32B_OFFSET)
+#define PCIE_SRIOV_VF_BAR4_OFFSET           (PCIE_SRIOV_VF_BAR3_OFFSET + BAR_32B_OFFSET)
+#define PCIE_SRIOV_VF_BAR5_OFFSET           (PCIE_SRIOV_VF_BAR4_OFFSET + BAR_32B_OFFSET)
 
 /* Capability Structure IDs */
 #define CID_PCIECS     0x10
