@@ -209,8 +209,10 @@
 #define PCIE_INTERRUPT_LINE_RESTORE_MASK    0x000000FFU
 #define PCIE_DCTL_RESTORE_MASK              0x00007FFFU
 #define PCIE_DCTL2_RESTORE_MASK             0x0000FFFFU
+#define PCIE_DPC_CTRL_RESTORE_MASK          0x01FF0000U
 #define PCIE_TYPE0_ROM_BAR_OFFSET           0x30
 #define PCIE_TYPE0_ROM_BAR_RESTORE_MASK     0xFFFFF801U
+#define PCIE_TYPE1_ILR_RESTORE_MASK         0xFFFF00FFU
 #define PCIE_ARRAY_ENTRIES(table) \
         (sizeof(table) / sizeof((table)[0]))
 #define PCIE_CFG_UPPER_WORD_RESTORE_MASK    0xFFFF0000U
@@ -447,6 +449,7 @@
 #define PCIE_DWORD_SIZE             0x04
 
 /*MSI Capabilities */
+#define MSI_CTRL_OFFSET                 0x0
 #define MSI_ENABLE_SHIFT                16
 #define MSI_ADDR_SHIFT                  32
 #define MSI_MSG_TBL_LOWER_ADDR_OFFSET   0x4

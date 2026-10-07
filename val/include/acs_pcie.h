@@ -180,6 +180,7 @@ typedef struct {
 typedef struct {
   uint32_t header[PCIE_STD_CFG_DWORDS];
   pcie_saved_cap_state_t pcie_cap;
+  pcie_saved_cap_state_t msi_cap;
   pcie_saved_cap_state_t aer_cap;
   pcie_saved_cap_state_t dpc_cap;
   pcie_saved_cap_state_t acs_cap;
