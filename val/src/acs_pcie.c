@@ -49,7 +49,12 @@ static const pcie_cfg_restore_entry_t pcie_type0_header_restore_table[] = {
 static const pcie_cfg_restore_entry_t pcie_type1_header_restore_table[] = {
   {BAR0_OFFSET, PCIE_RESTORE_FULL_MASK},
   {BAR1_OFFSET, PCIE_RESTORE_FULL_MASK},
-  {TYPE01_ILR, PCIE_INTERRUPT_LINE_RESTORE_MASK},
+  {TYPE1_PBN, PCIE_RESTORE_FULL_MASK},
+  {TYPE1_NP_MEM, PCIE_RESTORE_FULL_MASK},
+  {TYPE1_P_MEM, PCIE_RESTORE_FULL_MASK},
+  {TYPE1_P_MEM_BU, PCIE_RESTORE_FULL_MASK},
+  {TYPE1_P_MEM_LU, PCIE_RESTORE_FULL_MASK},
+  {TYPE01_ILR, PCIE_TYPE1_ILR_RESTORE_MASK},
 };
 
 static const pcie_cfg_restore_entry_t pcie_command_restore_table[] = {
@@ -63,6 +68,13 @@ static const pcie_cfg_restore_entry_t pcie_cap_restore_table[] = {
   {LCTL2R_OFFSET, PCIE_CFG_LOWER_WORD_RESTORE_MASK},
 };
 
+static const pcie_cfg_restore_entry_t pcie_msi_restore_table[] = {
+  {MSI_CTRL_OFFSET, PCIE_CFG_UPPER_WORD_RESTORE_MASK},
+  {MSI_MSG_TBL_LOWER_ADDR_OFFSET, PCIE_RESTORE_FULL_MASK},
+  {MSI_MSG_TBL_HIGHER_ADDR_OFFSET, PCIE_RESTORE_FULL_MASK},
+  {MSI_MSG_TBL_DATA_OFFSET, PCIE_CFG_LOWER_WORD_RESTORE_MASK},
+};
+
 static const pcie_cfg_restore_entry_t pcie_aer_restore_table[] = {
   {AER_UNCORR_MASK_OFFSET, PCIE_RESTORE_FULL_MASK},
   {AER_UNCORR_SEVR_OFFSET, PCIE_RESTORE_FULL_MASK},
@@ -71,7 +83,7 @@ static const pcie_cfg_restore_entry_t pcie_aer_restore_table[] = {
 };
 
 static const pcie_cfg_restore_entry_t pcie_dpc_restore_table[] = {
-  {DPC_CTRL_OFFSET, PCIE_CFG_UPPER_WORD_RESTORE_MASK},
+  {DPC_CTRL_OFFSET, PCIE_DPC_CTRL_RESTORE_MASK},
 };
 
 static const pcie_cfg_restore_entry_t pcie_acs_restore_table[] = {
@@ -1108,9 +1120,19 @@ val_pcie_find_capability(uint32_t bdf, uint32_t cid_type, uint32_t cid, uint32_t
 }
 
 static uint32_t
-val_pcie_saved_header_read32(pcie_saved_state_t *state, uint32_t offset)
+val_pcie_saved_header_read32(pcie_saved_state_t *state, uint32_t offset, uint32_t *data)
 {
-  return state->header[offset / sizeof(uint32_t)];
+  uint32_t index;
+
+  if ((offset % sizeof(uint32_t)) != 0)
+      return PCIE_UNKNOWN_RESPONSE;
+
+  index = offset / sizeof(uint32_t);
+  if (index >= PCIE_STD_CFG_DWORDS)
+      return PCIE_UNKNOWN_RESPONSE;
+
+  *data = state->header[index];
+  return PCIE_SUCCESS;
 }
 
 static void
@@ -1132,12 +1154,16 @@ val_pcie_restore_header_table(uint32_t bdf, pcie_saved_state_t *state,
 {
   uint32_t idx;
   uint32_t offset;
+  uint32_t saved_value;
 
   for (idx = 0; idx < num_entries; idx++) {
       offset = restore_table[idx].offset;
-      val_pcie_restore_cfg_masked(bdf, offset,
-                                  val_pcie_saved_header_read32(state, offset),
-                                  restore_table[idx].restore_mask);
+      if (val_pcie_saved_header_read32(state, offset, &saved_value) != PCIE_SUCCESS) {
+          val_print(ERROR, "\n       Invalid saved PCIe header offset 0x%x", offset);
+          continue;
+      }
+
+      val_pcie_restore_cfg_masked(bdf, offset, saved_value, restore_table[idx].restore_mask);
   }
 }
 
@@ -1208,6 +1234,9 @@ val_pcie_save_config_state(uint32_t bdf, pcie_saved_state_t *state)
   val_pcie_save_cap_table(bdf, PCIE_CAP, CID_PCIECS, &state->pcie_cap,
                           pcie_cap_restore_table,
                           PCIE_ARRAY_ENTRIES(pcie_cap_restore_table));
+  val_pcie_save_cap_table(bdf, PCIE_CAP, CID_MSI, &state->msi_cap,
+                          pcie_msi_restore_table,
+                          PCIE_ARRAY_ENTRIES(pcie_msi_restore_table));
   val_pcie_save_cap_table(bdf, PCIE_ECAP, ECID_AER, &state->aer_cap,
                           pcie_aer_restore_table,
                           PCIE_ARRAY_ENTRIES(pcie_aer_restore_table));
@@ -1252,7 +1281,11 @@ val_pcie_restore_config_state(uint32_t bdf, pcie_saved_state_t *state)
   uint32_t header_type;
   uint32_t saved_value;
 
-  saved_value = val_pcie_saved_header_read32(state, TYPE01_CLSR);
+  if (val_pcie_saved_header_read32(state, TYPE01_CLSR, &saved_value) != PCIE_SUCCESS) {
+      val_print(ERROR, "\n       Invalid saved PCIe header type offset");
+      return;
+  }
+
   header_type = (saved_value >> TYPE01_HTR_SHIFT) & HTR_HL_MASK;
 
   if (header_type == TYPE1_HEADER)
@@ -1271,6 +1304,7 @@ val_pcie_restore_config_state(uint32_t bdf, pcie_saved_state_t *state)
   val_pcie_restore_cap_table(bdf, &state->ats_cap, pcie_ats_restore_table);
   val_pcie_restore_cap_table(bdf, &state->pasid_cap, pcie_pasid_restore_table);
   val_pcie_restore_cap_table(bdf, &state->sriov_cap, pcie_sriov_restore_table);
+  val_pcie_restore_cap_table(bdf, &state->msi_cap, pcie_msi_restore_table);
   val_pcie_restore_cap_table(bdf, &state->pcie_cap, pcie_cap_restore_table);
 
   val_pcie_restore_header_table(bdf, state, pcie_command_restore_table,
