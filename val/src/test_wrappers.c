@@ -386,10 +386,9 @@ uint32_t
 pci_mm_02_entry(uint32_t num_pe)
 {
 #ifdef BSA_LINUX_BUILD
-    TEST_ENTRY_ID_e tst_entry_list[] = {PCI_MM_01_ENTRY, P106_ENTRY, TEST_ENTRY_SENTINEL};
+    TEST_ENTRY_ID_e tst_entry_list[] = {P106_ENTRY, TEST_ENTRY_SENTINEL};
 #else
-    TEST_ENTRY_ID_e tst_entry_list[] = {PCI_MM_01_ENTRY, P106_ENTRY, P107_ENTRY,
-                                        TEST_ENTRY_SENTINEL};
+    TEST_ENTRY_ID_e tst_entry_list[] = {P106_ENTRY, P107_ENTRY, TEST_ENTRY_SENTINEL};
 #endif
 
     return run_test_entries(tst_entry_list, num_pe);
