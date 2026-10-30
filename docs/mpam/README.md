@@ -21,7 +21,7 @@ through the memory system, along with controls that partition performance
 resources of a memory-system component (MSC).
 
 For more information, download the
-[MPAM System Component Specification](https://developer.arm.com/documentation/ihi0099/aa/).
+[MPAM System Component Specification](https://developer.arm.com/documentation/ihi0099/bc/).
 
 ## SYS-MPAM Architecture Compliance Suite
 
@@ -32,12 +32,12 @@ System Component specification, enabling verification that these behaviors have
 been implemented and interpreted correctly.
 
 ## Release details
-- **Code quality:** Beta
-- **Latest release version:** v0.7.0
-- **Release tag:** `v26.03_MPAM_0.7.0`
-- **Specification coverage:** MPAM Memory System Component Specification vA.a
+- **Release quality:** BET
+- **Latest release version:** b.c.0
+- **Release tag:** `v26.10_MPAM_b.c.0`
+- **Specification coverage:** MPAM Memory System Component Specification B.c
 - **Scope:** The compliance suite is **not** a substitute for design verification.
-- **Prebuilt binaries:** [`prebuilt_images/SYS-MPAM/v26.03_MPAM_0.7.0`](../../prebuilt_images/SYS-MPAM/v26.03_MPAM_0.7.0)
+- **Prebuilt binaries:** [`prebuilt_images/SYS-MPAM/v26.10_MPAM_b.c.0`](../../prebuilt_images/SYS-MPAM/v26.10_MPAM_b.c.0)
 - For details on tests implemented in this release, see the
   [SYS-MPAM Test Scenario Document](arm_mpam_architecture_compliance_test_scenario.md).
 
@@ -45,8 +45,21 @@ been implemented and interpreted correctly.
 
 | SYS-MPAM ACS Version | SYS-MPAM Tag ID | Spec Version |
 |:--------------------:|:---------------:|:------------:|
+| b.c.0  | v26.10_MPAM_b.c.0     | MPAM Memory System Component B.c |
 | v0.7.0 | v26.03_MPAM_0.7.0     | MPAM Memory System Component A.a |
 | v0.5.0 | v25.03_MPAM_0.5.0_ALP | MPAM Memory System Component A.a |
+
+#### GitHub branch
+
+- To use a released version, check out the corresponding **tag** from the
+  **main** branch.
+- To use the latest fixes and features, use the **main** branch.
+
+#### Prebuilt release binaries
+
+Prebuilt images for each release are available in the
+[`prebuilt_images/SYS-MPAM`](../../prebuilt_images/SYS-MPAM) directory on the
+main branch.
 
 ## Documentation and Guides
 - [SYS-MPAM Test Scenario Document](arm_mpam_architecture_compliance_test_scenario.md)

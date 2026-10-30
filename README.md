@@ -26,7 +26,7 @@ The **Arm sysarch-acs** repository is a collection of **Architecture Compliance 
 * **[BSA – Base System Architecture](https://developer.arm.com/documentation/den0094/latest/)**
 * **[SBSA – Server Base System Architecture](https://developer.arm.com/documentation/den0029/latest/)**
 * **[PC-BSA – Personal Computing Base System Architecture](https://developer.arm.com/documentation/den0151/latest/)**
-* **[MPAM (Memory system resource partitioning and monitoring) system component](https://developer.arm.com/documentation/ihi0099/latest/)**
+* **[MPAM (Memory system resource partitioning and monitoring) system component](https://developer.arm.com/documentation/ihi0099/bc/)**
 * **[DRTM – Dynamic Root of Trust for Measurement](https://developer.arm.com/documentation/den0113/latest/)**
 * **[PFDI – Platform Fault Detection Interface](https://documentation-service.arm.com/static/68593b17961937560be90fbe)**
 * **[VBSA – Virtual Base System Architecture](https://developer.arm.com/documentation/den0150/latest/)**
@@ -95,7 +95,7 @@ Validates platform compliance with Arm MPAM system component specification.
 
 | Version | Code Quality | Prebuilt Binary | Spec Reference |
 |---------|--------------|-----------------|---------------------|
-| v0.7.0  | BET          | [Mpam.efi](prebuilt_images/SYS-MPAM/v26.03_MPAM_0.7.0/) | [MPAM system component A.a](https://developer.arm.com/documentation/ihi0099/aa/?lang=en) |
+| b.c.0   | BET          | [Mpam.efi](prebuilt_images/SYS-MPAM/v26.10_MPAM_b.c.0/) | [MPAM system component B.c](https://developer.arm.com/documentation/ihi0099/bc/?lang=en) |
 
 ####  Reference for Build, Execution, and More
 Refer to the [MPAM ACS README](docs/mpam/README.md) for detailed build steps, execution procedures, additional information, and known limitations.
@@ -124,7 +124,7 @@ Validates platform compliance with Arm DRTM specification.
 
 | Version | Code Quality | Prebuilt Binary | Spec Reference |
 |---------|--------------|-----------------|---------------------|
-| v0.6.0  | ALP          | [Drtm.efi](https://github.com/ARM-software/bsa-acs/tree/main/prebuilt_images/DRTM/v25.03_DRTM_0.6_ALP2)| [DRTM 1.1](https://developer.arm.com/documentation/den0113/c/?lang=en) |
+| v1.4.0  | BET          | [Drtm.efi](prebuilt_images/DRTM/v26.10_DRTM_1.4.0/) | [DRTM 1.4](https://developer.arm.com/documentation/den0113/latest/) |
 
 ####  Reference for Build, Execution, and More
 Refer to the [DRTM ACS README](docs/drtm/README.md) for detailed build steps, execution procedures, additional information, and known limitations.

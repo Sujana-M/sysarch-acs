@@ -38,9 +38,11 @@ test and module identifiers for execution and reporting.
 
 - **Code quality:** BETA
 - **ACS version:** v1.4.0
+- **Release tag:** `v26.10_DRTM_1.4.0`
 - **Specification coverage:** DRTM Architecture for Arm v1.4
 - **Execution environments:** Silicon and emulation
 - **Scope:** The compliance suite is **not** a substitute for design verification.
+- **Prebuilt binaries:** [`prebuilt_images/DRTM/v26.10_DRTM_1.4.0`](../../prebuilt_images/DRTM/v26.10_DRTM_1.4.0)
 - For details on the tests implemented in this release, see the
   [DRTM Test Scenario Document](arm_drtm_architecture_compliance_test_scenario.md).
 
